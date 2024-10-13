@@ -1,5 +1,5 @@
-import mongoose from'mongoose';
-import bcrypt from'bcryptjs';
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -7,14 +7,17 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role: {
     type: String,
-    enum: ['Applicant', 'HR', 'Manager'],
-    default: 'Applicant'
+    enum: ["Applicant", "HR", "Manager"],
+    default: "Applicant",
   },
-  resumeUrl: { type: String }, 
+  resumeUrl: { type: String },
+  experience: { type: String },
+  education: { type: String },
+  designation: { type: String },
 });
 
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
     return next();
   }
   const salt = await bcrypt.genSalt(10);
@@ -22,4 +25,4 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-export default mongoose.model('User', userSchema);
+export default mongoose.model("User", userSchema);

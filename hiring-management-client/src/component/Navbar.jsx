@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import logo from "../assets/logo.png";
+import { logout } from "../redux/slices/authSlice";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { pathname } = useLocation();
-  const { auth } = useSelector((state) => state.auth);
-
+  const { auth, token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -32,7 +33,6 @@ const Navbar = () => {
         className={`fixed md:relative top-16 md:top-0 right-0 transition-transform duration-300 ease-in-out transform ${isOpen ? "translate-x-0" : "translate-x-full"} md:translate-x-0 z-50 shadow-md md:shadow-none md:flex-row md:gap-8`}
       >
         <ul className="flex flex-col md:flex-row gap-5 md:gap-8 justify-center items-center p-5 md:p-0">
-
           <li>
             <Link
               to="/jobs"
@@ -44,12 +44,29 @@ const Navbar = () => {
           </li>
           <li>
             <Link
+              to="/admin"
+              className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${pathname === "/jobs" && "text-blue-600"}`}
+              onClick={() => setIsOpen(false)}
+            >
+              Admin
+            </Link>
+          </li>
+          <li>
+            {(auth || token) ? (
+              <p
+                onClick={() => dispatch(logout())}
+                className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${pathname === "/login" && "text-blue-600"}`}
+              >
+                Logout
+              </p>
+            ) : (<Link
               to="/login"
               className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${pathname === "/login" && "text-blue-600"}`}
               onClick={() => setIsOpen(false)}
             >
               Login
-            </Link>
+            </Link>)
+            }
           </li>
           <li>
             <Link
@@ -62,7 +79,7 @@ const Navbar = () => {
           </li>
         </ul>
       </nav>
-    </div>
+    </div >
   );
 };
 

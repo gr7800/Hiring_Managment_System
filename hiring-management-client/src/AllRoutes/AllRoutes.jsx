@@ -6,6 +6,11 @@ import Signup from "../pages/Signup";
 import Contact from "../pages/Contact";
 import NotFound from "../pages/NotFound";
 import HomeWrapper from "../component/HomeWrapper";
+import Job from "../pages/Job";
+import SingleJob from "../pages/SingleJob";
+import Admin from "../pages/Admin";
+import PrivateRoute from "./PrivateRoute";
+import SpecialRoute from "./SpecialRoute";
 
 const router = createBrowserRouter([
   {
@@ -17,8 +22,25 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
+        path: "/jobs",
+        children: [
+          {
+            index: true,
+            element: <Job />
+          },
+          {
+            path: ":jobId",
+            element: <PrivateRoute><SingleJob /></PrivateRoute>
+          }
+        ]
+      },
+      {
         path: "/profile",
         element: <Profile />,
+      },
+      {
+        path: "/admin",
+        element: <SpecialRoute><Admin /></SpecialRoute>
       },
       {
         path: "/login",

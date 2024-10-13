@@ -38,7 +38,7 @@ const Home = () => {
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
           <p className="text-lg mb-8">Whether you're an applicant looking for the perfect job or an HR professional searching for the ideal candidate, our system is here to help.</p>
-          <Link to="/job" className="bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700">
+          <Link to="/jobs" className="bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700">
             Apply Now
           </Link>
         </div>

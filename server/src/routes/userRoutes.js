@@ -1,7 +1,12 @@
 import express from "express";
-import { register, login, getProfile, updateProfile } from "../controllers/userController.js"; 
-import { authMiddleware } from "../middleware/authMiddleware.js"; 
-import upload from "../middleware/upload.js"; 
+import {
+  register,
+  login,
+  getProfile,
+  updateProfile,
+} from "../controllers/userController.js";
+import { authMiddleware } from "../middleware/authMiddleware.js";
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
 

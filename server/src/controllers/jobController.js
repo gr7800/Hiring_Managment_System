@@ -1,9 +1,28 @@
-import Job from "../models/Job.js"; 
+import Job from "../models/Job.js";
 
 export const createJob = async (req, res) => {
   try {
-    const { title, description, location, salaryRange } = req.body;
-    if (!title || !description || !location || !salaryRange) {
+    const {
+      title,
+      description,
+      location,
+      salaryRange,
+      jobType,
+      remoteOrOnsite,
+      experiences,
+      educationalRequirements,
+    } = req.body;
+
+    if (
+      !title ||
+      !description ||
+      !location ||
+      !salaryRange ||
+      !jobType ||
+      !remoteOrOnsite ||
+      !experiences ||
+      !educationalRequirements
+    ) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -12,7 +31,11 @@ export const createJob = async (req, res) => {
       description,
       location,
       salaryRange,
-      postedBy: req.user._id, 
+      jobType,
+      remoteOrOnsite,
+      experiences,
+      educationalRequirements,
+      postedBy: req.user._id,
     });
 
     await job.save();
@@ -25,7 +48,16 @@ export const createJob = async (req, res) => {
 export const updateJob = async (req, res) => {
   try {
     const { jobId } = req.params;
-    const { title, description, location, salaryRange } = req.body;
+    const {
+      title,
+      description,
+      location,
+      salaryRange,
+      jobType,
+      remoteOrOnsite,
+      experiences,
+      educationalRequirements,
+    } = req.body;
 
     const job = await Job.findOne({ _id: jobId, postedBy: req.user._id });
     if (!job) {
@@ -38,6 +70,12 @@ export const updateJob = async (req, res) => {
     if (description) job.description = description;
     if (location) job.location = location;
     if (salaryRange) job.salaryRange = salaryRange;
+    if (jobType) job.jobType = jobType;
+    if (remoteOrOnsite) job.remoteOrOnsite = remoteOrOnsite;
+    if (experiences) job.experiences = experiences;
+    if (educationalRequirements)
+      job.educationalRequirements = educationalRequirements;
+
     job.updatedAt = Date.now();
 
     await job.save();
@@ -68,22 +106,70 @@ export const deleteJob = async (req, res) => {
 
 export const getAllJobs = async (req, res) => {
   try {
-    const jobs = await Job.find();
-    res.status(200).json(jobs);
+    const {
+      searchTerm,
+      page = 1,
+      limit = 10,
+      sort = "createdAt",
+      order = "desc",
+    } = req.query;
+
+    let searchCriteria = {};
+
+    if (searchTerm) {
+      searchCriteria = {
+        $or: [
+          { title: { $regex: searchTerm, $options: "i" } },
+          { location: { $regex: searchTerm, $options: "i" } },
+          { jobType: { $regex: searchTerm, $options: "i" } },
+          { remoteOrOnsite: { $regex: searchTerm, $options: "i" } },
+        ],
+      };
+    }
+
+    const jobs = await Job.find(searchCriteria)
+      .populate("postedBy", "name email")
+      .sort({ [sort]: order === "asc" ? 1 : -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+
+    const totalJobs = await Job.countDocuments(searchCriteria);
+
+    if (jobs.length === 0 && searchTerm) {
+      return res
+        .status(404)
+        .json({ message: "No jobs found matching your search" });
+    }
+
+    res.status(200).json({
+      jobs: jobs.map((job) => ({
+        ...job.toObject(),
+        postedBy: { name: job.postedBy.name, email: job.postedBy.email },
+      })),
+      totalJobs,
+      totalPages: Math.ceil(totalJobs / limit),
+      currentPage: Number(page),
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
 };
 
-export const searchJobs = async (req, res) => {
+export const getJobById = async (req, res) => {
   try {
-    const { title, location } = req.query;
-    let searchCriteria = {};
-    if (title) searchCriteria.title = { $regex: title, $options: "i" }; 
-    if (location) searchCriteria.location = { $regex: location, $options: "i" };
-
-    const jobs = await Job.find(searchCriteria);
-    res.status(200).json(jobs);
+    const { jobId } = req.params;
+    console.log(jobId);
+    const job = await Job.findById(jobId).populate("postedBy", "name email");
+    
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+    res.status(200).json({
+      job: {
+        ...job.toObject(),
+        postedBy: { name: job.postedBy.name, email: job.postedBy.email },
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }

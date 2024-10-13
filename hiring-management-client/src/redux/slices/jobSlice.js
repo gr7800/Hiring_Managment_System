@@ -1,0 +1,172 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  getAllJobs,
+  createJob as createJobService,
+  updateJob as updateJobService,
+  deleteJob as deleteJobService,
+  applyForJob,
+  getJobById,
+} from "../services/jobServices";
+
+export const fetchJobs = createAsyncThunk(
+  "jobs/fetchJobs",
+  async ({ searchTerm = "", page = 1, limit = 5 }, { rejectWithValue }) => {
+    try {
+      return await getAllJobs(searchTerm, page, limit);
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch jobs."
+      );
+    }
+  }
+);
+
+export const fetchSingleJob = createAsyncThunk(
+  "jobs/fetchSingleJob",
+  async (jobId, { rejectWithValue }) => {
+    try {
+      return await getJobById(jobId);
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch job details."
+      );
+    }
+  }
+);
+
+export const createJob = createAsyncThunk(
+  "jobs/createJob",
+  async (jobData, { rejectWithValue }) => {
+    try {
+      return await createJobService(jobData);
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to create job."
+      );
+    }
+  }
+);
+
+export const updateJob = createAsyncThunk(
+  "jobs/updateJob",
+  async ({ jobId, jobData }, { rejectWithValue }) => {
+    try {
+      return await updateJobService(jobId, jobData);
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update job."
+      );
+    }
+  }
+);
+
+export const deleteJob = createAsyncThunk(
+  "jobs/deleteJob",
+  async (jobId, { rejectWithValue }) => {
+    try {
+      return await deleteJobService(jobId);
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete job."
+      );
+    }
+  }
+);
+
+const initialState = {
+  jobs: [],
+  singleJob: null,
+  loading: false,
+  totalPage: 1,
+  currentPage: 1,
+  error: null,
+  message: null,
+};
+
+const jobSlice = createSlice({
+  name: "jobs",
+  initialState,
+  reducers: {
+    clearMessage: (state) => {
+      state.message = null;
+      state.error = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchJobs.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchJobs.fulfilled, (state, action) => {
+        state.loading = false;
+        state.jobs = action.payload.jobs;
+        state.totalPage = action.payload.totalPages;
+        state.currentPage = action.payload.currentPage;
+        state.error = null;
+      })
+      .addCase(fetchJobs.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(fetchSingleJob.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchSingleJob.fulfilled, (state, action) => {
+        state.loading = false;
+        state.singleJob = action.payload.job;
+        state.error = null;
+      })
+      .addCase(fetchSingleJob.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(createJob.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createJob.fulfilled, (state, action) => {
+        state.loading = false;
+        state.jobs.push(action.payload.job);
+        state.message = action.payload.message;
+        state.error = null;
+      })
+      .addCase(createJob.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateJob.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateJob.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.jobs.findIndex(
+          (job) => job._id === action.payload.job._id
+        );
+        if (index !== -1) {
+          state.jobs[index] = action.payload.job;
+          state.message = action.payload.message;
+        }
+        state.error = null;
+      })
+      .addCase(updateJob.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteJob.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteJob.fulfilled, (state, action) => {
+        state.loading = false;
+        state.jobs = state.jobs.filter((job) => job._id !== action.meta.arg);
+        state.message = action.payload.message;
+        state.error = null;
+      })
+      .addCase(deleteJob.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
+});
+
+export const { clearMessage } = jobSlice.actions;
+export default jobSlice.reducer;
