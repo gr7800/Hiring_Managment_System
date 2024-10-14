@@ -19,7 +19,7 @@ export const applyToJob = async (jobId, resumeUrl) => {
 
 export const getApplicationsForJob = async (jobId) => {
   const token = getToken();
-  const response = await axios.get(`${API_URL}/${jobId}`, {
+  const response = await axios.get(`${API_URL}/${jobId}/applications`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return response.data;

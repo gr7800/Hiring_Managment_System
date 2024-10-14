@@ -34,6 +34,7 @@ export const getApplicationsForJob = async (req, res) => {
     const { jobId } = req.params;
 
     const job = await Job.findById(jobId);
+    console.log(job);
     if (!job) {
       return res.status(404).json({ message: 'Job not found' });
     }
@@ -42,8 +43,10 @@ export const getApplicationsForJob = async (req, res) => {
       return res.status(403).json({ message: 'Access denied' });
     }
 
+    console.log(Application.find())
+
     const applications = await Application.find({ job: jobId })
-      .populate('applicant', 'name email') 
+      .populate('applicant', 'name email experience education designation') 
       .populate('job', 'title location');  
 
     res.status(200).json(applications);

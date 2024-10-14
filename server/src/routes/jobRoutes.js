@@ -5,6 +5,7 @@ import {
   deleteJob,
   getAllJobs,
   getJobById,
+  getMyJobs,
 } from "../controllers/jobController.js";
 import { authMiddleware, verifyRole } from "../middleware/authMiddleware.js";
 
@@ -19,6 +20,7 @@ router.delete(
   deleteJob
 );
 router.get("/", getAllJobs);
-router.get("/:jobId", getJobById);
+router.get("/my-jobs", authMiddleware, getMyJobs);
+router.get("/singlejob/:jobId", getJobById);
 
 export default router;

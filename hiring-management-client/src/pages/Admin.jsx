@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
-import AdminJobList from '../component/AdminJobList';
-import ApplicantsList from '../component/ApplicantsList';
-import JobFormModal from '../component/JobFormModal';
+import React, { useState } from "react";
+import AdminJobList from "../component/AdminJobList";
+import ApplicantsList from "../component/ApplicantsList";
+import JobFormModal from "../component/JobFormModal";
 
 const Admin = () => {
-  const [jobs, setJobs] = useState([]);
-  const [applicants, setApplicants] = useState([]);
-  const [showApplicants, setShowApplicants] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false); 
-  const [isUpdate, setIsUpdate] = useState(false);   
+  const [showJobs, setShowJobs] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [isUpdate, setIsUpdate] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
 
   const handleCreateJobClick = () => {
@@ -17,59 +15,46 @@ const Admin = () => {
     setModalOpen(true);
   };
 
-  const handleCreateJob = (jobDetails) => {
-    const newJob = { id: jobs.length + 1, ...jobDetails };
-    setJobs([...jobs, newJob]);
-    setModalOpen(false); 
-  };
-
-  const handleUpdateJob = (job) => {
+  const handleUpdate = (job) => {
     setIsUpdate(true);
-    setSelectedJob(job); 
+    setSelectedJob(job);
     setModalOpen(true);
   };
 
-  const handleJobUpdateSubmit = (updatedJob) => {
-    setJobs(jobs.map(job => job.id === updatedJob.id ? updatedJob : job));
-    setModalOpen(false); 
-  };
-
-  const handleDeleteJob = (jobId) => {
-    setJobs(jobs.filter(job => job.id !== jobId));
-  };
-
-  const handleViewApplicants = (jobId) => {
-    setShowApplicants(true);
-  };
-
   return (
-    <div>
-      <h1>Admin Dashboard</h1>
+    <div className="container mx-auto px-10 py-8">
+      <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
 
-      {/* Button to open the Job creation modal */}
-      <button className="bg-blue-500 text-white p-2 rounded" onClick={handleCreateJobClick}>
-        Create New Job
-      </button>
+      <div className="flex flex-wrap gap-4 mb-6">
+        <button
+          className="bg-blue-600 text-white p-3 rounded shadow-lg transition duration-300 hover:bg-blue-700"
+          onClick={handleCreateJobClick}
+        >
+          Create New Job
+        </button>
+
+        <button
+          className="bg-blue-600 text-white p-3 rounded shadow-lg transition duration-300 hover:bg-blue-700"
+          onClick={() => setShowJobs(!showJobs)}
+        >
+          {showJobs ? 'Hide Jobs' : 'See Jobs'}
+        </button>
+      </div>
 
       {modalOpen && (
         <JobFormModal
           isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}  
-          initialData={selectedJob}           
-          isUpdate={isUpdate}                 
-          onCreate={handleCreateJob}         
-          onUpdate={handleJobUpdateSubmit}   
+          onClose={() => setModalOpen(false)}
+          initialData={selectedJob}
+          isUpdate={isUpdate}
         />
       )}
 
-      <AdminJobList
-        jobs={jobs}
-        onDelete={handleDeleteJob}
-        onUpdate={handleUpdateJob}
-        onViewApplicants={handleViewApplicants}
-      />
-
-      {showApplicants && <ApplicantsList applicants={applicants} />}
+      {showJobs && (
+        <div className="mt-4 shadow-md p-4 bg-white rounded-lg">
+          <AdminJobList handleUpdate={handleUpdate} />
+        </div>
+      )}
     </div>
   );
 };

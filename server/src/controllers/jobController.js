@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+import mongoose from "mongoose";
 import Job from "../models/Job.js";
 
 export const createJob = async (req, res) => {
@@ -155,22 +157,76 @@ export const getAllJobs = async (req, res) => {
   }
 };
 
+export const getMyJobs = async (req, res) => {
+  try {
+    const {
+      searchTerm,
+      page = 1,
+      limit = 10,
+      sort = "createdAt",
+      order = "desc",
+    } = req.query;
+
+    const userId = req.user._id;
+
+    let searchCriteria = { postedBy: userId };
+
+    if (searchTerm) {
+      searchCriteria = {
+        ...searchCriteria,
+        $or: [
+          { title: { $regex: searchTerm, $options: "i" } },
+          { location: { $regex: searchTerm, $options: "i" } },
+          { jobType: { $regex: searchTerm, $options: "i" } },
+          { remoteOrOnsite: { $regex: searchTerm, $options: "i" } },
+        ],
+      };
+    }
+
+    const jobs = await Job.find(searchCriteria)
+      .populate("postedBy", "name email")
+      .sort({ [sort]: order === "asc" ? 1 : -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+
+    const totalJobs = await Job.countDocuments(searchCriteria);
+
+    if (jobs.length === 0 && searchTerm) {
+      return res.status(404).json({ message: "No jobs found matching your search" });
+    }
+
+    res.status(200).json({
+      jobs: jobs.map((job) => ({
+        ...job.toObject(),
+        postedBy: { name: job.postedBy.name, email: job.postedBy.email },
+      })),
+      totalJobs,
+      totalPages: Math.ceil(totalJobs / limit),
+      currentPage: Number(page),
+    });
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
 export const getJobById = async (req, res) => {
   try {
     const { jobId } = req.params;
-    console.log(jobId);
-    const job = await Job.findById(jobId).populate("postedBy", "name email");
-    
+    const job = await Job.findById(jobId).populate("postedBy", "_id name email");
+
     if (!job) {
       return res.status(404).json({ message: "Job not found" });
     }
     res.status(200).json({
       job: {
         ...job.toObject(),
-        postedBy: { name: job.postedBy.name, email: job.postedBy.email },
+        postedBy: { _id:job.postedBy._id, name: job.postedBy.name, email: job.postedBy.email },
       },
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
 };
+

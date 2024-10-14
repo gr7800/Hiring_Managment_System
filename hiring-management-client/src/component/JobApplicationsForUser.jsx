@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const JobApplicationsForUser = ({ applications }) => {
+    console.log(applications)
     const [expandedId, setExpandedId] = useState(null);
 
     const toggleExpand = (id) => {
@@ -11,9 +12,9 @@ const JobApplicationsForUser = ({ applications }) => {
     return (
         <div className="mt-6">
             <h2 className="text-xl font-semibold mb-4">Job Applications</h2>
-            {applications.length > 0 ? (
+            {applications?.length > 0 ? (
                 <ul className="space-y-4">
-                    {applications.map((application) => (
+                    {applications?.map((application) => (
                         <li
                             key={application._id}
                             className="border rounded p-4 shadow-sm bg-white"
@@ -21,13 +22,13 @@ const JobApplicationsForUser = ({ applications }) => {
                             <div className="flex justify-between items-center">
                                 <div>
                                     <p className="text-lg font-medium">
-                                        {application.job.title}
+                                        {application?.job?.title}
                                     </p>
                                     <p className="text-sm text-gray-500">
-                                        Location: {application.job.location}
+                                        Location: {application?.job?.location}
                                     </p>
                                     <p className="text-sm text-gray-500">
-                                        Status: {application.status}
+                                        Status: {application?.status}
                                     </p>
                                 </div>
                                 <button

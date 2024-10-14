@@ -6,7 +6,7 @@ const useHasApplied = (jobId) => {
     const { applications } = useSelector((state) => state.auth.user || {});
     useEffect(() => {
         const temp = applications?.some((application) => {
-            return application.job._id === jobId;
+            return application?.job?._id === jobId;
         });
         setHasApplied(temp);
     }, [applications, jobId])

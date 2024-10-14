@@ -11,7 +11,19 @@ export const getAllJobs = async (searchTerm = "", page = 1, limit = 5) => {
 };
 
 export const getJobById = async (jobId) => {
-  const response = await axios.get(`${API_URL}/${jobId}`);
+  const response = await axios.get(`${API_URL}/singlejob/${jobId}`);
+  return response.data;
+};
+
+export const getMyJob = async (page = 1, limit = 10, sort = "upatedAt", order = "desc") => {
+  const response = await axios.get(
+    `${API_URL}/my-jobs?page=${page}&limit=${limit}&sort=${sort}&order=${order}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  );
   return response.data;
 };
 

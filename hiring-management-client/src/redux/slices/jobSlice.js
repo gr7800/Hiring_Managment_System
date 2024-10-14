@@ -6,6 +6,7 @@ import {
   deleteJob as deleteJobService,
   applyForJob,
   getJobById,
+  getMyJob,
 } from "../services/jobServices";
 
 export const fetchJobs = createAsyncThunk(
@@ -26,6 +27,19 @@ export const fetchSingleJob = createAsyncThunk(
   async (jobId, { rejectWithValue }) => {
     try {
       return await getJobById(jobId);
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch job details."
+      );
+    }
+  }
+);
+
+export const fetchMyJob = createAsyncThunk(
+  "jobs/fetchmyjob",
+  async ({ page, limit, sort, order }, { rejectWithValue }) => {
+    try {
+      return await getMyJob(page, limit, sort, order);
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch job details."
@@ -121,6 +135,22 @@ const jobSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
+      .addCase(fetchMyJob.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchMyJob.fulfilled, (state, action) => {
+        state.loading = false;
+        state.jobs = action.payload.jobs;
+        state.totalPage = action.payload.totalPages;
+        state.currentPage = action.payload.currentPage;
+        state.error = null;
+      })
+      .addCase(fetchMyJob.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
       .addCase(createJob.pending, (state) => {
         state.loading = true;
       })
@@ -134,30 +164,25 @@ const jobSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
       .addCase(updateJob.pending, (state) => {
         state.loading = true;
       })
       .addCase(updateJob.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.jobs.findIndex(
-          (job) => job._id === action.payload.job._id
-        );
-        if (index !== -1) {
-          state.jobs[index] = action.payload.job;
-          state.message = action.payload.message;
-        }
+        state.message = action.payload.message;
         state.error = null;
       })
       .addCase(updateJob.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
+
       .addCase(deleteJob.pending, (state) => {
         state.loading = true;
       })
       .addCase(deleteJob.fulfilled, (state, action) => {
         state.loading = false;
-        state.jobs = state.jobs.filter((job) => job._id !== action.meta.arg);
         state.message = action.payload.message;
         state.error = null;
       })

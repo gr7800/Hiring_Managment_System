@@ -45,7 +45,7 @@ const Navbar = () => {
           <li>
             <Link
               to="/admin"
-              className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${pathname === "/jobs" && "text-blue-600"}`}
+              className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${pathname === "/admin" && "text-blue-600"}`}
               onClick={() => setIsOpen(false)}
             >
               Admin
