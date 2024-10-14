@@ -9,50 +9,49 @@ const Admin = () => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
 
-  const handleCreateJobClick = () => {
-    setIsUpdate(false);
-    setSelectedJob(null);
+  const toggleModal = (job = null, updateMode = false) => {
+    setSelectedJob(job);
+    setIsUpdate(updateMode);
     setModalOpen(true);
   };
 
-  const handleUpdate = (job) => {
-    setIsUpdate(true);
-    setSelectedJob(job);
-    setModalOpen(true);
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedJob(null);
   };
 
   return (
-    <div className="container mx-auto px-10 py-8">
-      <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
+    <div className="container mx-auto px-8 py-6">
+      <h1 className="text-3xl font-semibold text-gray-800 mb-6">Admin Dashboard</h1>
 
-      <div className="flex flex-wrap gap-4 mb-6">
+      <div className="flex flex-wrap gap-4 mb-8">
         <button
-          className="bg-blue-600 text-white p-3 rounded shadow-lg transition duration-300 hover:bg-blue-700"
-          onClick={handleCreateJobClick}
+          className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md transition-transform transform hover:scale-105"
+          onClick={() => toggleModal()}
         >
           Create New Job
         </button>
 
         <button
-          className="bg-blue-600 text-white p-3 rounded shadow-lg transition duration-300 hover:bg-blue-700"
-          onClick={() => setShowJobs(!showJobs)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md transition-transform transform hover:scale-105"
+          onClick={() => setShowJobs((prev) => !prev)}
         >
-          {showJobs ? 'Hide Jobs' : 'See Jobs'}
+          {showJobs ? "Hide Jobs" : "Show Jobs"}
         </button>
       </div>
 
       {modalOpen && (
         <JobFormModal
           isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
+          onClose={handleCloseModal}
           initialData={selectedJob}
           isUpdate={isUpdate}
         />
       )}
 
       {showJobs && (
-        <div className="mt-4 shadow-md p-4 bg-white rounded-lg">
-          <AdminJobList handleUpdate={handleUpdate} />
+        <div className="mt-6 bg-white p-6 shadow-lg rounded-md">
+          <AdminJobList handleUpdate={(job) => toggleModal(job, true)} />
         </div>
       )}
     </div>

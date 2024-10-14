@@ -1,24 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import {
-  fetchMyJob,
-  createJob as handleCreateJob,
-  updateJob as handleUpdateJob,
-} from "../redux/slices/jobSlice";
+import { fetchMyJob, createJob as handleCreateJob, updateJob as handleUpdateJob } from "../redux/slices/jobSlice";
 import { toast } from "react-toastify";
 
 const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    title: "Full Stack Devloper",
-    description:
-      "We are seeking a Senior Full Stack Developer with expertise in Node.js Backend API development and experience in Microservices architecture, along with exposure to frontend technologies such as React.js and Next.js The ideal candidate will primarily focus on building robust and scalable backend services while also being comfortable with modern frontend frameworks to support full-stack developmen...",
-    location: "Jaipur",
-    salaryRange: "50000-70000",
+    title: "",
+    description: "",
+    location: "",
+    salaryRange: "",
     jobType: "Full-time",
     remoteOrOnsite: "Remote",
-    experiences: "3 year",
-    educationalRequirements: "Masters",
+    experiences: "",
+    educationalRequirements: "",
   });
 
   useEffect(() => {
@@ -28,35 +23,40 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
   }, [isUpdate, initialData]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (isUpdate) {
-      dispatch(handleUpdateJob({ jobId: initialData._id, jobData: formData }))
-        .then((res) => {
-          if (res?.payload.message) {
-            toast.success(res?.payload?.message);
-            dispatch(fetchMyJob())
-          } else {
-            toast.warning(res?.payload);
-          }
-        })
-        .catch((error) => toast.error(error.message));
-    } else {
-      dispatch(handleCreateJob(formData))
-        .then((res) => {
-          if (res?.payload.message) {
-            toast.success(res?.payload?.message);
-            dispatch(fetchMyJob())
-          } else {
-            toast.warning(res?.payload);
-          }
-        })
-        .catch((error) => toast.error(error.message));
+  const validateForm = () => {
+    const { title, description, location, salaryRange, experiences, educationalRequirements } = formData;
+    if (!title || !description || !location || !salaryRange || !experiences || !educationalRequirements) {
+      toast.error("All fields are required.");
+      return false;
     }
-    onClose();
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    try {
+      const action = isUpdate
+        ? handleUpdateJob({ jobId: initialData._id, jobData: formData })
+        : handleCreateJob(formData);
+      const res = await dispatch(action);
+
+      if (res.payload.message) {
+        toast.success(res.payload.message);
+        dispatch(fetchMyJob());
+      } else {
+        toast.warning(res.payload);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      onClose();
+    }
   };
 
   if (!isOpen) return null;
@@ -65,9 +65,9 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
     <div className="modal-overlay">
       <div className="modal-container shadow-lg p-8 bg-white rounded">
         <form onSubmit={handleSubmit}>
-          <h2>{isUpdate ? "Update Job" : "Create Job"}</h2>
+          <h2 className="text-xl font-semibold mb-4">{isUpdate ? "Update Job" : "Create Job"}</h2>
           <input
-            className="input-field"
+            className="input-field mb-4"
             type="text"
             name="title"
             value={formData.title}
@@ -76,7 +76,7 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
             required
           />
           <textarea
-            className="input-field"
+            className="input-field mb-4"
             name="description"
             value={formData.description}
             onChange={handleChange}
@@ -84,7 +84,7 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
             required
           />
           <input
-            className="input-field"
+            className="input-field mb-4"
             type="text"
             name="location"
             value={formData.location}
@@ -93,7 +93,7 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
             required
           />
           <input
-            className="input-field"
+            className="input-field mb-4"
             type="text"
             name="salaryRange"
             value={formData.salaryRange}
@@ -102,10 +102,11 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
             required
           />
           <select
-            className="input-field"
+            className="input-field mb-4"
             name="jobType"
             value={formData.jobType}
             onChange={handleChange}
+            required
           >
             <option value="Full-time">Full-time</option>
             <option value="Part-time">Part-time</option>
@@ -113,17 +114,18 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
             <option value="Internship">Internship</option>
           </select>
           <select
-            className="input-field"
+            className="input-field mb-4"
             name="remoteOrOnsite"
             value={formData.remoteOrOnsite}
             onChange={handleChange}
+            required
           >
             <option value="Remote">Remote</option>
             <option value="Onsite">Onsite</option>
             <option value="Hybrid">Hybrid</option>
           </select>
           <input
-            className="input-field"
+            className="input-field mb-4"
             type="text"
             name="experiences"
             value={formData.experiences}
@@ -132,7 +134,7 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
             required
           />
           <input
-            className="input-field"
+            className="input-field mb-4"
             type="text"
             name="educationalRequirements"
             value={formData.educationalRequirements}
@@ -141,17 +143,10 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
             required
           />
           <div className="flex justify-end">
-            <button
-              type="button"
-              className="mr-4 bg-red-500 text-white p-2 rounded"
-              onClick={onClose}
-            >
+            <button type="button" className="mr-4 bg-red-500 text-white p-2 rounded hover:bg-red-600 transition duration-200" onClick={onClose}>
               Cancel
             </button>
-            <button
-              type="submit"
-              className="bg-blue-500 text-white p-2 rounded"
-            >
+            <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-200">
               {isUpdate ? "Update Job" : "Create Job"}
             </button>
           </div>

@@ -1,144 +1,180 @@
-# Hiring_Managment_System
+Here is a detailed `README.md` file for your app based on the implementation and structure discussed:
 
-### Requirement
+---
 
+# Hiring Management System
 
-To build this hiring management system with an admin panel, here’s how you can approach it using Node.js for the backend:
+This is a full-stack hiring management system where hiring managers can post jobs, users can apply for jobs, and managers can track and update the status of job applications. The application is designed to be scalable, modular, and optimized for performance, with both frontend and backend components.
 
-### 1. **Define Your System’s Requirements:**
-   - **Admin (HR) panel:**
-     - Post and manage job listings.
-     - View applicants for each job.
-     - Shortlist candidates.
-   
-   - **Normal User:**
-     - View job listings.
-     - Apply to jobs with a resume (upload PDF/doc).
-     - Track their application status.
-   
-   - **Manager:**
-     - Track applications.
-     - View resumes.
-     - Shortlist or reject candidates.
+## Features
 
-### 2. **Set Up Your Database (MongoDB/MySQL):**
-   - **Jobs Table:**
-     - `id` (Job ID)
-     - `title`
-     - `description`
-     - `location`
-     - `salary_range`
-     - `posted_by` (HR's User ID)
-     - `created_at`
-     - `updated_at`
-   
-   - **Users Table (for job applicants):**
-     - `id` (User ID)
-     - `name`
-     - `email`
-     - `password` (hashed)
-     - `role` (HR, Manager, Applicant)
-     - `resume_url` (file path or URL to resume)
-     - `created_at`
-   
-   - **Applications Table:**
-     - `id` (Application ID)
-     - `job_id` (linked to Jobs)
-     - `user_id` (linked to Users)
-     - `status` (applied, shortlisted, rejected)
-     - `created_at`
+- **Job Posting and Management**: Allows hiring managers to post jobs, update, delete, and list job postings.
+- **Job Application**: Users can apply to jobs, and upload resumes.
+- **Application Tracking**: Managers can track applications and update their status.
+- **Pagination, Sorting, and Search**: The job listing supports pagination, search, and sorting for better usability.
+- **Profile Management**: Users can register, log in, update their profiles, and manage their job applications.
+- **Authentication**: Uses JWT for securing API requests and managing user sessions.
 
-### 3. **Routes and API Design:**
-   You can use **Express.js** to handle the backend routes.
+## Tech Stack
 
-   - **Job Routes:**
-     - `POST /jobs`: HR/Admin posts a job.
-     - `GET /jobs`: Get the list of available jobs.
-     - `GET /jobs/:id`: Get a specific job.
-     - `PUT /jobs/:id`: Update a job (HR/Admin).
-     - `DELETE /jobs/:id`: Delete a job (HR/Admin).
+- **Frontend**: React, Redux Toolkit, Vite, TailwindCSS
+- **Backend**: Node.js, Express.js, MongoDB
+- **Authentication**: JSON Web Token (JWT)
+- **File Upload**: Cloudinary for storing resumes
+- **State Management**: Redux Toolkit (Async Thunks)
 
-   - **User Routes:**
-     - `POST /register`: Register a user.
-     - `POST /login`: Login a user and return a JWT token.
-     - `GET /user/applications`: Get the current user’s applications.
-   
-   - **Application Routes:**
-     - `POST /apply/:jobId`: User applies for a job (attach resume).
-     - `GET /applications`: HR/Admin or Manager views all applications.
-     - `PUT /applications/:id/shortlist`: Shortlist an applicant.
-     - `PUT /applications/:id/reject`: Reject an applicant.
-   
-### 4. **Setting Up Role-Based Authentication (JWT):**
-   - **HR/Admin** should have permissions to post and manage jobs.
-   - **Manager** should have permissions to track applications and shortlist/reject candidates.
-   - **Applicants** should only have access to viewing and applying for jobs.
+## Prerequisites
 
-   Use **JWT (JSON Web Tokens)** to manage authentication and roles.
+Before running the application, ensure you have the following installed:
 
-   - Middleware for routes that check the user’s role:
-     ```javascript
-     const verifyRole = (roles) => {
-       return (req, res, next) => {
-         const user = req.user; 
-         if (roles.includes(user.role)) {
-           next();
-         } else {
-           res.status(403).json({ message: "Forbidden" });
-         }
-       };
-     };
-     ```
-   
-### 5. **Handling File Uploads (Resume Upload):**
-   Use **Multer** to handle resume uploads for applicants. You can store the files locally or use cloud storage like AWS S3 or Firebase.
+- Node.js (v14 or higher)
+- MongoDB (running locally or through a cloud provider like MongoDB Atlas)
+- Cloudinary account for file uploads
 
-   Example route to handle resume upload:
-   ```javascript
-   const multer = require('multer');
-   const storage = multer.diskStorage({
-     destination: (req, file, cb) => {
-       cb(null, 'uploads/');
-     },
-     filename: (req, file, cb) => {
-       cb(null, Date.now() + '-' + file.originalname);
-     }
-   });
+## Installation
 
-   const upload = multer({ storage });
+### Backend
 
-   app.post('/apply/:jobId', upload.single('resume'), (req, res) => {
-     const jobId = req.params.jobId;
-     const resume = req.file.path;
-     // Save application with resume in the database
-   });
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-repo/hiring-management-system.git
+   cd hiring-management-system/backend
    ```
 
-### 6. **Frontend Design:**
-   You can use **React.js** for building a dynamic user interface.
-   
-   - **Admin Panel (for HR/Managers)**:
-     - A dashboard to post and manage jobs.
-     - View and filter applications.
-     - Shortlist/reject candidates.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-   - **User Panel**:
-     - A page to list all jobs.
-     - Apply to jobs (upload resume).
-     - Track application status (applied, shortlisted, rejected).
+3. Create a `.env` file in the `backend` directory and add the following variables:
+   ```bash
+   PORT=5000
+   MONGO_URI=<Your MongoDB connection string>
+   JWT_SECRET=<Your JWT secret key>
+   CLOUDINARY_NAME=<Your Cloudinary cloud name>
+   CLOUDINARY_API_KEY=<Your Cloudinary API key>
+   CLOUDINARY_API_SECRET=<Your Cloudinary API secret>
+   ```
 
-### 7. **Database Relationships:**
-   - **One-to-Many Relationship** between Jobs and Applications (one job can have many applications).
-   - **One-to-Many Relationship** between Users and Applications (one user can apply to many jobs).
+4. Start the server:
+   ```bash
+   npm run dev
+   ```
 
-### 8. **Deployment:**
-   - **Backend**: You can deploy it using services like **Heroku, AWS, or DigitalOcean**.
-   - **Database**: Use **MongoDB Atlas** for MongoDB or **AWS RDS** for MySQL/Postgres.
-   - **Frontend**: Host the React frontend on **Netlify** or **Vercel**.
+### Frontend
 
-### Sample Flow:
+1. Navigate to the `frontend` directory:
+   ```bash
+   cd ../frontend
+   ```
 
-1. **HR/Manager** logs into the admin panel and posts a job.
-2. **Applicant** logs in, views the job listings, and applies for jobs with a resume.
-3. **Manager** logs in, views the applications, and shortlists or rejects candidates.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
+3. Create a `.env` file in the `frontend` directory and add the following variables:
+   ```bash
+   VITE_BASE_URL=http://localhost:5000
+   ```
+
+4. Start the frontend:
+   ```bash
+   npm run dev
+   ```
+
+## API Endpoints
+
+### Jobs
+
+- **GET** `/jobs` - Get all jobs with pagination, search, and sorting
+- **GET** `/jobs/:jobId` - Get job details by ID
+- **POST** `/jobs` - Create a new job (Protected: Manager)
+- **PUT** `/jobs/:jobId` - Update a job (Protected: Manager)
+- **DELETE** `/jobs/:jobId` - Delete a job (Protected: Manager)
+  
+### Applications
+
+- **POST** `/applications/:jobId/apply` - Apply to a job
+- **GET** `/applications/:jobId/applications` - Get all applications for a job (Protected: Manager)
+- **PUT** `/applications/:applicationId/status` - Update application status (Protected: Manager)
+- **GET** `/applications/details/:applicationId` - Get application details
+
+### User
+
+- **POST** `/users/register` - Register a new user
+- **POST** `/users/login` - Log in a user
+- **GET** `/users/profile` - Fetch the user's profile (Protected)
+- **PUT** `/users/profile` - Update the user's profile (Protected)
+
+## State Management
+
+State management is handled using Redux Toolkit. Async actions like fetching jobs, applying to jobs, updating application status, etc., are managed using `createAsyncThunk`. Below is a breakdown of the application state.
+
+### Slices
+
+- **Jobs Slice**: Manages the state for job listings, fetching jobs, updating jobs, and deleting jobs.
+- **Applications Slice**: Manages the state for job applications, applying to jobs, updating application status, and fetching application details.
+- **User Slice**: Handles user authentication (login, register) and profile management.
+
+### Thunks
+
+Each action that requires asynchronous data fetching is handled using `createAsyncThunk`. This makes it easier to manage loading, success, and error states.
+
+Example for applying to a job:
+
+```javascript
+export const applyToJob = createAsyncThunk(
+  "applications/applyToJob",
+  async ({ jobId, resumeUrl }, { rejectWithValue }) => {
+    try {
+      const response = await apiApplyToJob(jobId, resumeUrl);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+```
+
+## Error Handling
+
+The application makes use of structured error handling to provide meaningful messages in case of failure. All async actions use `rejectWithValue` to return error messages that are stored in the Redux state and displayed to the user when necessary.
+
+Example:
+
+```javascript
+export const updateApplicationStatus = createAsyncThunk(
+  "applications/updateApplicationStatus",
+  async ({ applicationId, status }, { rejectWithValue }) => {
+    try {
+      const response = await apiUpdateApplicationStatus(applicationId, status);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message || "Failed to update status");
+    }
+  }
+);
+```
+
+## Running Tests
+
+Tests can be written using Jest or any preferred testing framework. To run tests:
+
+```bash
+npm run test
+```
+
+## Deployment
+
+### Backend
+
+You can deploy the backend to services like Heroku or DigitalOcean. Make sure to update the environment variables for production, including MongoDB connection strings and Cloudinary credentials.
+
+### Frontend
+
+You can deploy the frontend to services like Vercel or Netlify. Update the `VITE_BASE_URL` in the `.env` file to point to the deployed backend API.
+
+## Contributing
+
+If you wish to contribute to the project, feel free to fork the repository and submit a pull request. Please ensure your code follows best practices and is well-tested.

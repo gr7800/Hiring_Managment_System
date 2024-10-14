@@ -3,47 +3,49 @@ import { BaseUrl } from "../../utils/constant";
 
 const API_URL = `${BaseUrl}/users`;
 
-export const registerUserService = async (userData) => {
+const apiClient = axios.create({
+  baseURL: API_URL,
+  headers: { "Content-Type": "multipart/form-data" },
+});
+
+const handleResponse = async (promise) => {
   try {
-    const response = await axios.post(`${API_URL}/register`, userData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const response = await promise;
     return response.data;
   } catch (error) {
-    throw error.response ? error.response.data : { message: "Network Error" };
+    const errorMsg = error.response
+      ? error.response.data
+      : { message: "Network Error" };
+    throw errorMsg;
   }
+};
+
+export const registerUserService = async (userData) => {
+  return handleResponse(apiClient.post("/register", userData));
 };
 
 export const loginUserService = async (userData) => {
-  try {
-    const response = await axios.post(`${API_URL}/login`, userData);
-    return response.data;
-  } catch (error) {
-    throw error.response ? error.response.data : { message: "Network Error" };
-  }
+  return handleResponse(
+    axios.post(`${API_URL}/login`, userData, {
+      headers: { "Content-Type": "application/json" },
+    })
+  );
 };
 
 export const fetchUserProfileService = async (token) => {
-  try {
-    const response = await axios.get(`${API_URL}/profile`, {
+  return handleResponse(
+    axios.get(`${API_URL}/profile`, {
       headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-  } catch (error) {
-    throw error.response ? error.response.data : { message: "Network Error" };
-  }
+    })
+  );
 };
 
 export const updateUserProfileService = async (userData, token) => {
-  try {
-    const response = await axios.put(`${API_URL}/profile`, userData, {
+  return handleResponse(
+    axios.put(`${API_URL}/profile`, userData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
       },
-    });
-    return response.data;
-  } catch (error) {
-    throw error.response ? error.response.data : { message: "Network Error" };
-  }
+    })
+  );
 };

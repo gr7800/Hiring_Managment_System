@@ -3,57 +3,55 @@ import { BaseUrl } from "../../utils/constant";
 
 const API_URL = `${BaseUrl}/jobs`;
 
+const apiClient = axios.create({
+  baseURL: API_URL,
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+});
+
+const handleResponse = async (promise) => {
+  try {
+    const response = await promise;
+    return response.data;
+  } catch (error) {
+    const errorMsg = error.response ? error.response.data : { message: "Network Error" };
+    throw errorMsg;
+  }
+};
+
 export const getAllJobs = async (searchTerm = "", page = 1, limit = 5) => {
-  const response = await axios.get(
-    `${API_URL}?searchTerm=${searchTerm}&page=${page}&limit=${limit}`
+  return handleResponse(
+    axios.get(`${API_URL}`, {
+      params: { searchTerm, page, limit },
+    })
   );
-  return response.data;
 };
 
 export const getJobById = async (jobId) => {
-  const response = await axios.get(`${API_URL}/singlejob/${jobId}`);
-  return response.data;
+  return handleResponse(apiClient.get(`/singlejob/${jobId}`));
 };
 
-export const getMyJob = async (page = 1, limit = 10, sort = "upatedAt", order = "desc") => {
-  const response = await axios.get(
-    `${API_URL}/my-jobs?page=${page}&limit=${limit}&sort=${sort}&order=${order}`,
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }
+export const getMyJob = async (page = 1, limit = 10, sort = "updatedAt", order = "desc") => {
+  return handleResponse(
+    apiClient.get("/my-jobs", {
+      params: { page, limit, sort, order },
+    })
   );
-  return response.data;
 };
 
 export const createJob = async (jobData) => {
-  const response = await axios.post(API_URL, jobData, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
-  return response.data;
+  return handleResponse(apiClient.post("/", jobData));
 };
 
 export const updateJob = async (jobId, jobData) => {
-  const response = await axios.put(`${API_URL}/${jobId}`, jobData, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
-  return response.data;
+  return handleResponse(apiClient.put(`/${jobId}`, jobData));
 };
 
 export const deleteJob = async (jobId) => {
-  const response = await axios.delete(`${API_URL}/${jobId}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
-  return response.data;
+  return handleResponse(apiClient.delete(`/${jobId}`));
 };
 
 export const applyForJob = async (jobId) => {
-  // Implement the logic for applying for a job
+  
 };

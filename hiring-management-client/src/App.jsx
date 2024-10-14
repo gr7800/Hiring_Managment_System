@@ -1,9 +1,10 @@
-import { AllRoutes } from './AllRoutes/AllRoutes'
 import './App.css'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AllRoutes from './AllRoutes/AllRoutes';
 
 function App() {
+ 
   return (
     <>
       <ToastContainer />

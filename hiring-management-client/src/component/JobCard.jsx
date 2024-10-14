@@ -1,58 +1,41 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import PopupModel from "./PopupModel";
-import ApplicantsList from "./ApplicantsList";
-import { getApplicationsForJob } from "../redux/slices/applicationSlice";
 
 const JobCard = ({ job, onDelete, onUpdate }) => {
-  const role = useSelector((state) => state.auth.user.role);
-  const [showApplications, setShowApplications] = useState(false);
-  const dispatch = useDispatch();
-
-  const handleSeeApplication = () => {
-    dispatch(getApplicationsForJob(job._id))
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((er) => {
-        console.log(er);
-      });
-    setShowApplications((prev)=>!prev);
-  };
+  const role = useSelector((state) => state.auth.user?.role);
 
   return (
     <div className="job-card border border-gray-300 rounded-lg shadow-md p-4 bg-white hover:shadow-lg transition-shadow duration-300">
-      <h3 className="text-xl font-semibold">{job.title}</h3>
-      <p className="text-gray-600">{job.description}</p>
-      <p className="text-gray-700">
+      <h3 className="text-xl font-semibold mb-2">{job.title}</h3>
+      <p className="text-gray-600 mb-4">{job.description}</p>
+      <div className="text-gray-700 mb-2">
         <strong>Location:</strong> {job.location}
-      </p>
-      <p className="text-gray-700">
+      </div>
+      <div className="text-gray-700 mb-2">
         <strong>Salary:</strong> {job.salaryRange}
-      </p>
-      <p className="text-gray-700">
+      </div>
+      <div className="text-gray-700 mb-2">
         <strong>Job Type:</strong> {job.jobType}
-      </p>
-      <p className="text-gray-700">
+      </div>
+      <div className="text-gray-700 mb-2">
         <strong>Remote/Onsite:</strong> {job.remoteOrOnsite}
-      </p>
-      <p className="text-gray-700">
+      </div>
+      <div className="text-gray-700 mb-2">
         <strong>Experience:</strong> {job.experiences}
-      </p>
-      <p className="text-gray-700">
+      </div>
+      <div className="text-gray-700 mb-2">
         <strong>Education:</strong> {job.educationalRequirements}
-      </p>
-      <p className="text-gray-700">
+      </div>
+      <div className="text-gray-700 mb-4">
         <strong>Company:</strong> {job.companyName}
-      </p>
-      <p className="text-gray-700">
-        <strong>Posted On:</strong>{" "}
-        {new Date(job.createdAt).toLocaleDateString()}
-      </p>
-      <div className="mt-4 flex space-x-2">
-        {role === "HR" || role === "Manager" ? (
-          <div className="flex flex-wrap gap-4">
+      </div>
+      <div className="text-gray-700 mb-4">
+        <strong>Posted On:</strong> {new Date(job.createdAt).toLocaleDateString()}
+      </div>
+      <div className="flex space-x-2">
+        {["HR", "Manager"].includes(role) ? (
+          <>
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200"
               onClick={() => onUpdate(job)}
@@ -65,13 +48,13 @@ const JobCard = ({ job, onDelete, onUpdate }) => {
             >
               Delete
             </button>
-            <button
+            <Link
+              to={`/jobs/${job._id}`}
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200"
-              onClick={handleSeeApplication}
             >
-              {showApplications?'Hide Applications':'See Applications'}
-            </button>
-          </div>
+              Manage Applications
+            </Link>
+          </>
         ) : (
           <Link
             to={`/jobs/${job._id}`}
@@ -81,7 +64,6 @@ const JobCard = ({ job, onDelete, onUpdate }) => {
           </Link>
         )}
       </div>
-      {showApplications && <ApplicantsList />}
     </div>
   );
 };

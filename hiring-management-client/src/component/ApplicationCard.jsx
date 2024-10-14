@@ -1,22 +1,86 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import IFrameModel from './IFrameModel';
+import { updateApplicationStatus, getApplicationsForJob } from '../redux/slices/applicationSlice';
 
 const ApplicationCard = ({ application }) => {
+  const [showResume, setShowResume] = useState(false);
+  const [status, setStatus] = useState(application.status || "Applied");
+  const dispatch = useDispatch();
 
-  const handleClick = () => {
-    // history.push(`/applications/${application._id}`); 
+  const handleStatusChange = async () => {
+    if (!status) {
+      toast.warning("Please select a valid status.");
+      return;
+    }
+    try {
+      const res = await dispatch(updateApplicationStatus({ applicationId: application._id, status }));
+      if (res?.payload?.message) {
+        toast.success(res.payload.message);
+        dispatch(getApplicationsForJob(application.job._id));
+      } else {
+        toast.warning(res.payload || "An error occurred while updating the status.");
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to update application status.");
+    }
   };
 
   return (
-    <div 
-      className="border rounded-lg p-4 mb-4 shadow-lg transition-transform transform hover:scale-105 cursor-pointer"
-      onClick={handleClick}
-    >
-      <h3 className="font-semibold text-lg text-blue-600">{application.job.title}</h3>
-      <p className="text-gray-700"><strong>Applicant:</strong> {application.applicant.name}</p>
-      <p className="text-gray-700"><strong>Email:</strong> {application.applicant.email}</p>
-      <p className="text-gray-700"><strong>Location:</strong> {application.job.location}</p>
-      <p className="text-gray-700"><strong>Status:</strong> <span className="text-green-500">{application.status}</span></p>
-      <p className="text-gray-500"><strong>Applied At:</strong> {new Date(application.appliedAt).toLocaleDateString()}</p>
+    <div className="border rounded-lg p-6 mb-6 shadow-lg bg-white hover:shadow-xl transition-shadow">
+      <h3 className="text-xl font-semibold text-blue-700 mb-2">{application.job?.title || "Job Title"}</h3>
+      <p className="text-gray-600 mb-4">
+        <strong>Location:</strong> {application.job?.location || "N/A"}
+      </p>
+
+      <div className="bg-gray-50 p-4 rounded-lg mb-4">
+        <h4 className="text-lg font-medium text-gray-800 mb-3">Applicant Details</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <p className="text-gray-700"><strong>Name:</strong> {application.applicant?.name || "N/A"}</p>
+          <p className="text-gray-700"><strong>Email:</strong> {application.applicant?.email || "N/A"}</p>
+          <p className="text-gray-700"><strong>Designation:</strong> {application.applicant?.designation || "N/A"}</p>
+          <p className="text-gray-700"><strong>Education:</strong> {application.applicant?.education || "N/A"}</p>
+          <p className="text-gray-700"><strong>Experience:</strong> {application.applicant?.experience || "N/A"} years</p>
+          <p className="text-gray-500"><strong>Applied At:</strong> {new Date(application.appliedAt).toLocaleDateString() || "N/A"}</p>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4 mb-4">
+        <label htmlFor="status" className="text-gray-600"><strong>Status:</strong></label>
+        <select
+          id="status"
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+          className="p-2 border border-gray-300 rounded-lg bg-blue-50"
+        >
+          <option value="Applied">Applied</option>
+          <option value="Shortlisted">Shortlisted</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </div>
+
+      <div className="flex gap-4">
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          onClick={() => setShowResume(true)}
+        >
+          View Resume
+        </button>
+        <button
+          className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+          onClick={handleStatusChange}
+        >
+          Update Status
+        </button>
+      </div>
+
+      {showResume && (
+        <IFrameModel
+          resumeUrl={application.resumeUrl || "#"}
+          toggleModal={() => setShowResume(false)}
+        />
+      )}
     </div>
   );
 };

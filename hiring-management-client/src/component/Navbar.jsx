@@ -1,19 +1,34 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import logo from "../assets/logo.png";
-import { logout } from "../redux/slices/authSlice";
+import { fetchUserProfile, logout } from "../redux/slices/authSlice";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { pathname } = useLocation();
-  const { auth, token } = useSelector((state) => state.auth);
+  const { user, auth, token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    if (!user && token) {
+      dispatch(fetchUserProfile()).then((res) => {
+        if (res?.payload == "Invalid token") {
+          toast.warning(res?.payload);
+          navigate("/login")
+        }
+      }).catch((error) => {
+        toast.error(error)
+      })
+    }
+  }, [])
 
   return (
     <div className="w-full bg-gray-100 flex justify-between items-center px-10 shadow-md fixed top-0 z-20 text-gray-800 font-medium">

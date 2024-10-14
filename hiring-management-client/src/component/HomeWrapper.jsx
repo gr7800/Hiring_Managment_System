@@ -5,14 +5,12 @@ import Footer from "./Footer";
 
 const HomeWrapper = () => {
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <div className="min-h-screen bg-[#e5faff] flex flex-col justify-between">
-        <div className="py-[80px]">
-          <Outlet />
-        </div>
-        <Footer />
-      </div>
+      <main className="flex-grow bg-[#e5faff] py-20">
+        <Outlet />
+      </main>
+      <Footer />
     </div>
   );
 };

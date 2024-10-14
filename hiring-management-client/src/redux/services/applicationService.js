@@ -5,42 +5,34 @@ const API_URL = `${BaseUrl}/applications`;
 
 const getToken = () => localStorage.getItem("token");
 
+const apiClient = axios.create({
+  baseURL: API_URL,
+  headers: {
+    Authorization: `Bearer ${getToken()}`,
+  },
+});
+
+const handleResponse = async (promise) => {
+  try {
+    const response = await promise;
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
 export const applyToJob = async (jobId, resumeUrl) => {
-  const token = getToken();
-  const response = await axios.post(
-    `${API_URL}/${jobId}/apply`,
-    { resumeUrl },
-    {
-      headers: { Authorization: `Bearer ${token}` },
-    }
-  );
-  return response.data;
+  return handleResponse(apiClient.post(`/${jobId}/apply`, { resumeUrl }));
 };
 
 export const getApplicationsForJob = async (jobId) => {
-  const token = getToken();
-  const response = await axios.get(`${API_URL}/${jobId}/applications`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
+  return handleResponse(apiClient.get(`/${jobId}/applications`));
 };
 
 export const updateApplicationStatus = async (applicationId, status) => {
-  const token = getToken();
-  const response = await axios.put(
-    `${API_URL}/${applicationId}`,
-    { status },
-    {
-      headers: { Authorization: `Bearer ${token}` },
-    }
-  );
-  return response.data;
+  return handleResponse(apiClient.put(`/${applicationId}/status`, { status }));
 };
 
 export const getApplicationDetails = async (applicationId) => {
-  const token = getToken();
-  const response = await axios.get(`${API_URL}/details/${applicationId}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
+  return handleResponse(apiClient.get(`/details/${applicationId}`));
 };

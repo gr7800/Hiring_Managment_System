@@ -14,11 +14,11 @@ const Login = () => {
     if (auth) {
       navigate("/profile");
     }
-  }, [auth]);
+  }, [auth, navigate]);
 
   const initialValues = {
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   };
 
   const validationSchema = Yup.object({
@@ -36,30 +36,30 @@ const Login = () => {
   };
 
   return (
-    <div className="container mx-auto mt-10 p-6 shadow-lg rounded-lg max-w-lg bg-white">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Login</h1>
+    <div className="container mx-auto mt-10 p-8 shadow-xl rounded-lg max-w-md bg-white">
+      <h1 className="text-4xl font-semibold text-gray-900 mb-6 text-center">Login</h1>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
-          <Form className="space-y-4">
-            <div>
+          <Form className="space-y-6">
+            <div className="flex flex-col">
               <Field
                 type="email"
                 name="email"
                 placeholder="Email Address"
-                className="w-full p-3 border border-gray-300 rounded shadow-sm focus:outline-none focus:border-blue-500"
+                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
               <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
             </div>
-            <div>
+            <div className="flex flex-col">
               <Field
                 type="password"
                 name="password"
                 placeholder="Password"
-                className="w-full p-3 border border-gray-300 rounded shadow-sm focus:outline-none focus:border-blue-500"
+                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
               <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
             </div>
@@ -67,20 +67,20 @@ const Login = () => {
             <button
               type="submit"
               disabled={isSubmitting || loading}
-              className="w-full p-3 bg-blue-500 text-white font-semibold rounded shadow hover:bg-blue-600 transition duration-200"
+              className={`w-full p-4 bg-blue-600 text-white font-semibold rounded-lg transition duration-300 hover:bg-blue-700 ${loading ? "cursor-not-allowed" : ""}`}
             >
               {loading ? "Logging in..." : "Login"}
             </button>
 
-            {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+            {error && <p className="text-red-500 text-center text-sm mt-4">{error}</p>}
           </Form>
         )}
       </Formik>
 
-      <div className="mt-4 text-center">
-        <p className="text-gray-600">
+      <div className="mt-6 text-center">
+        <p className="text-gray-700">
           Don't have an account?
-          <Link to="/register" className="text-blue-500 hover:underline ml-1">
+          <Link to="/register" className="text-blue-600 hover:underline ml-1">
             Sign up here
           </Link>
         </p>

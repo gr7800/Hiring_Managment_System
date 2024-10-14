@@ -46,7 +46,7 @@ export const getApplicationsForJob = async (req, res) => {
     console.log(Application.find())
 
     const applications = await Application.find({ job: jobId })
-      .populate('applicant', 'name email experience education designation') 
+      .populate('applicant', 'name email experience education designation resume') 
       .populate('job', 'title location');  
 
     res.status(200).json(applications);
@@ -59,8 +59,8 @@ export const updateApplicationStatus = async (req, res) => {
   try {
     const { applicationId } = req.params;
     const { status } = req.body;
-
-    if (!['Shortlisted', 'Rejected'].includes(status)) {
+    console.log(status)
+    if (!['Applied','Shortlisted', 'Rejected'].includes(status)) {
       return res.status(400).json({ message: 'Invalid status value' });
     }
 

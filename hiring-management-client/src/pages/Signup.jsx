@@ -12,18 +12,20 @@ const Signup = () => {
     const navigate = useNavigate();
 
     const initialValues = {
-        name: '',
-        email: '',
-        password: '',
-        role: 'Applicant',
+        name: "",
+        email: "",
+        password: "",
+        role: "Applicant",
         resume: null,
     };
 
     const validationSchema = Yup.object({
-        name: Yup.string().required("Name is required"),
+        name: Yup.string().min(2, "Name is too short").max(50, "Name is too long").required("Name is required"),
         email: Yup.string().email("Invalid email format").required("Email is required"),
         password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
-        role: Yup.string().required("Role is required"),
+        role: Yup.string().oneOf(["Applicant", "HR", "Manager"], "Invalid role").required("Role is required"),
+        resume: Yup.mixed().test("fileSize", "File too large", (value) => !value || (value && value.size <= 5 * 1024 * 1024)) // Max 5MB
+            .test("fileType", "Unsupported Format", (value) => !value || (value && ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"].includes(value.type)))
     });
 
     const handleSubmit = (values, { setSubmitting, resetForm }) => {
@@ -47,13 +49,13 @@ const Signup = () => {
 
     useEffect(() => {
         if (auth) {
-            navigate("/login")
+            navigate("/login");
         }
-    }, [auth])
+    }, [auth, navigate]);
 
     return (
-        <div className="container mx-auto mt-10 p-6 shadow-lg rounded-lg max-w-lg bg-white">
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Sign Up</h1>
+        <div className="max-w-lg mx-auto mt-10 p-8 bg-white rounded-lg shadow-md">
+            <h1 className="text-3xl font-semibold text-gray-800 mb-6 text-center">Create Account</h1>
 
             <Formik
                 initialValues={initialValues}
@@ -61,15 +63,15 @@ const Signup = () => {
                 onSubmit={handleSubmit}
             >
                 {({ setFieldValue, isSubmitting }) => (
-                    <Form className="space-y-4">
+                    <Form className="space-y-5">
                         <div>
                             <Field
                                 type="text"
                                 name="name"
                                 placeholder="Full Name"
-                                className="w-full p-3 border border-gray-300 rounded shadow-sm focus:outline-none focus:border-blue-500"
+                                className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
-                            <ErrorMessage name="name" component="div" className="text-red-500 text-sm mt-1" />
+                            <ErrorMessage name="name" component="div" className="text-red-600 text-sm mt-1" />
                         </div>
 
                         <div>
@@ -77,9 +79,9 @@ const Signup = () => {
                                 type="email"
                                 name="email"
                                 placeholder="Email Address"
-                                className="w-full p-3 border border-gray-300 rounded shadow-sm focus:outline-none focus:border-blue-500"
+                                className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
-                            <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
+                            <ErrorMessage name="email" component="div" className="text-red-600 text-sm mt-1" />
                         </div>
 
                         <div>
@@ -87,9 +89,9 @@ const Signup = () => {
                                 type="password"
                                 name="password"
                                 placeholder="Password"
-                                className="w-full p-3 border border-gray-300 rounded shadow-sm focus:outline-none focus:border-blue-500"
+                                className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
-                            <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
+                            <ErrorMessage name="password" component="div" className="text-red-600 text-sm mt-1" />
                         </div>
 
                         <div>
@@ -98,46 +100,43 @@ const Signup = () => {
                                 name="resume"
                                 accept=".pdf,.doc,.docx"
                                 onChange={(e) => setFieldValue("resume", e.target.files[0])}
-                                className="w-full p-3 border border-gray-300 rounded shadow-sm focus:outline-none"
+                                className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
-                            <p className="text-gray-500 text-sm mt-1">Upload Resume (PDF, DOC, DOCX)</p>
-                            <ErrorMessage name="resume" component="div" className="text-red-500 text-sm mt-1" />
+                            <p className="text-sm text-gray-600 mt-1">Upload Resume (PDF, DOC, DOCX - Max: 5MB)</p>
+                            <ErrorMessage name="resume" component="div" className="text-red-600 text-sm mt-1" />
                         </div>
 
                         <div>
                             <Field
                                 as="select"
                                 name="role"
-                                className="w-full p-3 border border-gray-300 rounded shadow-sm focus:outline-none focus:border-blue-500"
+                                className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                                 <option value="Applicant">Applicant</option>
                                 <option value="HR">HR</option>
                                 <option value="Manager">Manager</option>
                             </Field>
-                            <ErrorMessage name="role" component="div" className="text-red-500 text-sm mt-1" />
+                            <ErrorMessage name="role" component="div" className="text-red-600 text-sm mt-1" />
                         </div>
 
                         <button
                             type="submit"
                             disabled={isSubmitting || loading}
-                            className="w-full p-3 bg-blue-500 text-white font-semibold rounded shadow hover:bg-blue-600 transition duration-200"
+                            className="w-full p-4 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition-colors duration-300 focus:outline-none"
                         >
-                            {loading ? "Registering..." : "Register"}
+                            {loading ? "Registering..." : "Sign Up"}
                         </button>
 
-                        {successMessage && <p className="text-green-500 text-sm mt-4">{successMessage}</p>}
-                        {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+                        {successMessage && <p className="text-green-600 text-sm mt-4">{successMessage}</p>}
+                        {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
                     </Form>
                 )}
             </Formik>
-            <div className="mt-4 text-center">
-                <p className="text-gray-600">
-                    Allready have an account?
-                    <Link to="/login" className="text-blue-500 hover:underline ml-1">
-                        Sign In here
-                    </Link>
-                </p>
-            </div>
+
+            <p className="mt-4 text-center text-gray-600">
+                Already have an account?
+                <Link to="/login" className="text-blue-500 hover:underline ml-1">Log In</Link>
+            </p>
         </div>
     );
 };
