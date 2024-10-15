@@ -2,7 +2,8 @@ import User from "../models/User.js";
 import Application from "../models/Application.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { uploadToCloudinary } from "../config/cloudinary.js";
+import { deleteFromCloudanary, uploadToCloudinary } from "../config/cloudinary.js";
+import { v2 as cloudinary } from "cloudinary";
 
 export const register = async (req, res) => {
   try {
@@ -51,11 +52,14 @@ export const updateProfile = async (req, res) => {
     if (designation) user.designation = designation;
 
     if (req.file) {
-      const resumeUrl = await uploadToCloudinary(req);
-      // console.log(resumeUrl);
-      user.resumeUrl = resumeUrl;
+      if (user?.resumeUrl) {
+        let temp = await deleteFromCloudanary(
+          user?.resumeUrl.split("/").pop()
+        );
+      }
+      const secureUrl = await uploadToCloudinary(req);
+      user.resumeUrl = secureUrl;
     }
-
     await user.save();
     res.status(200).json({ message: "Profile updated successfully", user });
   } catch (error) {

@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 
 const JobList = ({ searchTerm, currentPage, jobsPerPage, setCurrentPage, handleUpdate }) => {
+  
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { jobs, loading, totalPage, error, message } = useSelector((state) => state.jobs);
@@ -35,7 +36,7 @@ const JobList = ({ searchTerm, currentPage, jobsPerPage, setCurrentPage, handleU
   };
 
   return (
-    <div className="p-6">
+    <div>
       {loading && <p className="text-gray-500">Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
       {message && <p className="text-green-500">{message}</p>}

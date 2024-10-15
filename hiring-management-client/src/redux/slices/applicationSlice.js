@@ -64,10 +64,10 @@ const applicationsSlice = createSlice({
   },
   reducers: {
     resetApplicationDetails: (state) => {
-      state.applicationDetails = null;
       state.error = "";
     },
   },
+  
   extraReducers: (builder) => {
     builder
       .addCase(applyToJob.pending, (state) => {

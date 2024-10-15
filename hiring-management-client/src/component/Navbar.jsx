@@ -3,14 +3,18 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.webp";
 import { fetchUserProfile, logout } from "../redux/slices/authSlice";
 import { toast } from "react-toastify";
+import { clearMessage } from "../redux/slices/jobSlice";
+import { clearMessage as cleanIt } from "../redux/slices/authSlice";
+import { resetApplicationDetails } from "../redux/slices/applicationSlice";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { pathname } = useLocation();
   const { user, auth, token } = useSelector((state) => state.auth);
+  const role = user?.role;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const toggleMenu = () => {
@@ -19,16 +23,24 @@ const Navbar = () => {
 
   useEffect(() => {
     if (!user && token) {
-      dispatch(fetchUserProfile()).then((res) => {
-        if (res?.payload == "Invalid token") {
-          toast.warning(res?.payload);
-          navigate("/login")
-        }
-      }).catch((error) => {
-        toast.error(error)
-      })
+      dispatch(fetchUserProfile())
+        .then((res) => {
+          if (res?.payload == "Invalid token") {
+            toast.warning(res?.payload);
+            navigate("/login");
+          }
+        })
+        .catch((error) => {
+          toast.error(error);
+        });
     }
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    dispatch(clearMessage());
+    dispatch(cleanIt());
+    dispatch(resetApplicationDetails());
+  }, [pathname]);
 
   return (
     <div className="w-full bg-gray-100 flex justify-between items-center px-10 shadow-md fixed top-0 z-20 text-gray-800 font-medium">
@@ -36,7 +48,7 @@ const Navbar = () => {
         <img
           src={logo}
           alt="JobPortal Logo"
-          className="hover:scale-105 transition-transform duration-200 max-w-[150px] max-h-[72px]"
+          className="max-w-[150px] max-h-[72px]"
         />
       </Link>
 
@@ -45,48 +57,66 @@ const Navbar = () => {
       </div>
 
       <nav
-        className={`fixed bg-gray-100 md:relative top-16 md:top-0 right-0 transition-transform duration-300 ease-in-out transform ${isOpen ? "translate-x-0" : "translate-x-full"} md:translate-x-0 z-50 shadow-md md:shadow-none md:flex-row md:gap-8`}
+        className={`fixed bg-gray-100 md:relative top-16 md:top-0 right-0 transition-transform duration-300 ease-in-out transform ${
+          isOpen ? "translate-x-0" : "translate-x-full"
+        } md:translate-x-0 z-50 shadow-md md:shadow-none md:flex-row md:gap-8`}
       >
         <ul className="flex flex-col md:flex-row gap-5 md:gap-8 justify-center items-center p-5 md:p-0">
           <li>
             <Link
               to="/jobs"
-              className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${pathname === "/jobs" && "text-blue-600"}`}
+              className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${
+                pathname === "/jobs" && "text-blue-600"
+              }`}
               onClick={() => setIsOpen(false)}
             >
               Jobs
             </Link>
           </li>
+          {token && user && (role === "HR" || role === "Manager") && (
+            <li>
+              <Link
+                to="/admin"
+                className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${
+                  pathname === "/admin" && "text-blue-600"
+                }`}
+                onClick={() => setIsOpen(false)}
+              >
+                Admin
+              </Link>
+            </li>
+          )}
           <li>
-            <Link
-              to="/admin"
-              className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${pathname === "/admin" && "text-blue-600"}`}
-              onClick={() => setIsOpen(false)}
-            >
-              Admin
-            </Link>
-          </li>
-          <li>
-            {(auth || token) ? (
+            {auth || token ? (
               <p
-                onClick={() => dispatch(logout())}
-                className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${pathname === "/login" && "text-blue-600"}`}
+                onClick={() => {
+                  dispatch(logout());
+                  navigate("/login");
+                }}
+                className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${
+                  pathname === "/login" && "text-blue-600"
+                }`}
               >
                 Logout
               </p>
-            ) : (<Link
-              to="/login"
-              className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${pathname === "/login" && "text-blue-600"}`}
-              onClick={() => setIsOpen(false)}
-            >
-              Login
-            </Link>)
-            }
+            ) : (
+              <Link
+                to="/login"
+                className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${
+                  pathname === "/login" && "text-blue-600"
+                }`}
+                onClick={() => setIsOpen(false)}
+              >
+                Login
+              </Link>
+            )}
           </li>
           <li>
             <Link
               to="/profile"
-              className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${pathname === "/profile" && "text-blue-600"}`}
+              className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${
+                pathname === "/profile" && "text-blue-600"
+              }`}
               onClick={() => setIsOpen(false)}
             >
               <CgProfile size={24} />
@@ -94,7 +124,7 @@ const Navbar = () => {
           </li>
         </ul>
       </nav>
-    </div >
+    </div>
   );
 };
 

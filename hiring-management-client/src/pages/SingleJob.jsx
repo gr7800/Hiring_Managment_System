@@ -71,10 +71,10 @@ const SingleJob = () => {
     return (
         <div className="w-full min-h-screen bg-gray-100 px-10 py-10">
             {singleJob ? (
-                <div className="w-full flex flex-col justify-center items-center">
+                <div className="w-full flex flex-col justify-center items-center gap-8">
                     <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg p-8 mx-4">
                         <h2 className="text-2xl font-bold text-gray-800 mb-4">{singleJob.title}</h2>
-                        <div className="space-y-2 text-gray-600">
+                        <div className="space-y-2 text-gray-600 mb-5">
                             <p><span className="font-semibold">Description:</span> {singleJob.description}</p>
                             <p><span className="font-semibold">Location:</span> {singleJob.location}</p>
                             <p><span className="font-semibold">Salary Range:</span> {singleJob.salaryRange}</p>

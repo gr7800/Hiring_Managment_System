@@ -15,19 +15,24 @@ const AdminJobList = ({ handleUpdate }) => {
       dispatch(clearMessage());
       dispatch(fetchMyJob({ page, limit, sortBy, order }));
     }
-  }, [page, limit, sortBy, order, dispatch]);
+  }, [dispatch, page, limit, sortBy, order]);
 
   useEffect(() => {
     fetchJobs();
   }, [fetchJobs]);
 
   const handlePageChange = (newPage) => {
-    if (newPage > 0) setPage(newPage);
+    if (newPage > 0) {
+      setPage(newPage);
+    }
   };
 
   const handleLimitChange = (e) => {
     const value = parseInt(e.target.value);
-    if (value > 0) setLimit(value);
+    if (value > 0) {
+      setLimit(value);
+      setPage(1); 
+    }
   };
 
   const handleSortChange = (e) => {
@@ -64,7 +69,6 @@ const AdminJobList = ({ handleUpdate }) => {
           >
             <option value="createdAt">Created At</option>
             <option value="updatedAt">Updated At</option>
-            <option value="salary">Salary</option>
           </select>
 
           <label htmlFor="order" className="font-semibold">Order:</label>

@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import "dotenv/config";
+import fs from "fs";
 
 const configureCloudinary = () => {
   cloudinary.config({
@@ -7,9 +8,9 @@ const configureCloudinary = () => {
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
   });
-}
+};
 
-export const uploadToCloudinary = async (req, publicId) => {
+export const uploadToCloudinary = async (req) => {
   configureCloudinary();
   try {
     const options = {
@@ -19,18 +20,32 @@ export const uploadToCloudinary = async (req, publicId) => {
       unique_filename: false,
     };
 
-    if (publicId) {
-      options.public_id = publicId;
-    }
-
-    const { secure_url } = await cloudinary.uploader.upload(
+    const cloudnaryres = await cloudinary.uploader.upload(
       req.file.path,
       options
     );
-    
-    return secure_url;
+    fs.unlinkSync(req.file.path);
+
+    return cloudnaryres?.secure_url;
   } catch (error) {
     console.error("Cloudinary upload error:", error);
     throw new Error("Error uploading file to Cloudinary");
+  }
+};
+
+export const deleteFromCloudanary = async (publicId) => {
+  configureCloudinary();
+  try {
+    const fullPublicId = `resume/${publicId}`;
+    
+    let res = await cloudinary.uploader.destroy(fullPublicId, {
+      resource_type: "raw" 
+    });
+    
+    // console.log(res, "File deletion response");
+    return res.result;
+  } catch (error) {
+    console.error("Cloudinary delete error:", error);
+    throw new Error("Error deleting file from Cloudinary");
   }
 };

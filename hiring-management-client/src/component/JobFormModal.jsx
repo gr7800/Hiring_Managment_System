@@ -48,7 +48,6 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
 
       if (res.payload.message) {
         toast.success(res.payload.message);
-        dispatch(fetchMyJob());
       } else {
         toast.warning(res.payload);
       }
@@ -57,6 +56,8 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
     } finally {
       onClose();
     }
+
+    dispatch(fetchMyJob({ page:1, limit:5, sort:"updatedAt", order:"desc" }));
   };
 
   if (!isOpen) return null;
