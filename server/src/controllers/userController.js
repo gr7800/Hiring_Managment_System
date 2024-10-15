@@ -52,6 +52,7 @@ export const updateProfile = async (req, res) => {
 
     if (req.file) {
       const resumeUrl = await uploadToCloudinary(req);
+      // console.log(resumeUrl);
       user.resumeUrl = resumeUrl;
     }
 

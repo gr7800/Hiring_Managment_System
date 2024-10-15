@@ -7,19 +7,21 @@ const __dirname = path.dirname(__filename);
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, path.join(__dirname, "../uploads"));
+    callback(null, path.resolve(__dirname, "../uploads"));
   },
-
   filename: (req, file, callback) => {
-    const filename = `${Date.now()} - ${Math.round(Math.random() * 1000000)}`;
-    const ext = `${path.extname(file.originalname)}`;
-    callback(null, filename + ext);
+    const timestamp = Date.now();
+    const newFilename = `${timestamp}-${file.originalname}`;
+    callback(null, newFilename);
   },
 });
 
 const upload = multer({
   storage,
-  limits: { fileSize: 1024 * 1024 * 5, files: 1 },
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+    files: 1,
+  },
 }).single("resume");
 
 export default upload;

@@ -52,6 +52,3 @@ export const deleteJob = async (jobId) => {
   return handleResponse(apiClient.delete(`/${jobId}`));
 };
 
-export const applyForJob = async (jobId) => {
-  
-};

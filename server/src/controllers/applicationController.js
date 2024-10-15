@@ -34,7 +34,6 @@ export const getApplicationsForJob = async (req, res) => {
     const { jobId } = req.params;
 
     const job = await Job.findById(jobId);
-    console.log(job);
     if (!job) {
       return res.status(404).json({ message: 'Job not found' });
     }
@@ -42,8 +41,6 @@ export const getApplicationsForJob = async (req, res) => {
     if (req.user.role !== 'HR' && req.user.role !== 'Manager') {
       return res.status(403).json({ message: 'Access denied' });
     }
-
-    console.log(Application.find())
 
     const applications = await Application.find({ job: jobId })
       .populate('applicant', 'name email experience education designation resume') 
@@ -59,7 +56,6 @@ export const updateApplicationStatus = async (req, res) => {
   try {
     const { applicationId } = req.params;
     const { status } = req.body;
-    console.log(status)
     if (!['Applied','Shortlisted', 'Rejected'].includes(status)) {
       return res.status(400).json({ message: 'Invalid status value' });
     }

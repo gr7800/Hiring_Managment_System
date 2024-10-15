@@ -38,10 +38,14 @@ const Profile = () => {
       formData.append("resume", resume);
     }
 
-    dispatch(updateUserProfile(formData)).then(() => {
+    dispatch(updateUserProfile(formData)).then((res) => {
       setSubmitting(false);
-      toast.success("Profile Updated Successfully!");
-      dispatch(fetchUserProfile());
+      if (res?.payload?.message) {
+        toast.success("Profile Updated Successfully!");
+        dispatch(fetchUserProfile())
+      }else if(res?.payload){
+        toast.warning(res?.payload);
+      }
     });
   };
 
@@ -52,7 +56,9 @@ const Profile = () => {
   return (
     <div className="w-full px-4 lg:px-10">
       <div className="container mx-auto mt-10 p-8 shadow-lg rounded-lg max-w-2xl bg-white">
-        <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">User Profile</h1>
+        <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">
+          User Profile
+        </h1>
         {error && <p className="text-red-500 text-center">{error}</p>}
         <div className="flex flex-col items-center space-y-6">
           <img
@@ -83,7 +89,11 @@ const Profile = () => {
                   className="w-full p-4 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled
                 />
-                <ErrorMessage name="name" component="div" className="text-red-500 text-sm mt-1" />
+                <ErrorMessage
+                  name="name"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
 
                 <Field
                   type="email"
@@ -92,14 +102,27 @@ const Profile = () => {
                   className="w-full p-4 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled
                 />
-                <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
 
-                <Field as="select" name="role" className="w-full p-4 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
+                <Field
+                  as="select"
+                  name="role"
+                  className="w-full p-4 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled
+                >
                   <option value="Applicant">Applicant</option>
                   <option value="HR">HR</option>
                   <option value="Manager">Manager</option>
                 </Field>
-                <ErrorMessage name="role" component="div" className="text-red-500 text-sm mt-1" />
+                <ErrorMessage
+                  name="role"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
 
                 <Field
                   type="text"
@@ -107,7 +130,11 @@ const Profile = () => {
                   placeholder="Experience in years (e.g., 2.6)"
                   className="w-full p-4 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <ErrorMessage name="experience" component="div" className="text-red-500 text-sm mt-1" />
+                <ErrorMessage
+                  name="experience"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
 
                 <Field
                   type="text"
@@ -115,7 +142,11 @@ const Profile = () => {
                   placeholder="Highest Education (e.g., Master of Computer Application)"
                   className="w-full p-4 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <ErrorMessage name="education" component="div" className="text-red-500 text-sm mt-1" />
+                <ErrorMessage
+                  name="education"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
 
                 <Field
                   type="text"
@@ -123,10 +154,16 @@ const Profile = () => {
                   placeholder="Current Designation (e.g., Software Developer)"
                   className="w-full p-4 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <ErrorMessage name="designation" component="div" className="text-red-500 text-sm mt-1" />
+                <ErrorMessage
+                  name="designation"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
 
                 <div className="relative">
-                  <label className="block mb-2 text-sm font-medium text-gray-700">Upload Resume</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
+                    Upload Resume
+                  </label>
                   <input
                     type="file"
                     name="resume"
@@ -137,8 +174,14 @@ const Profile = () => {
                     }}
                     className="w-full p-3 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  <ErrorMessage name="resume" component="div" className="text-red-500 text-sm mt-1" />
-                  <p className="text-gray-500 mt-2">{resume ? resume.name : "No file chosen"}</p>
+                  <ErrorMessage
+                    name="resume"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+                  <p className="text-gray-500 mt-2">
+                    {resume ? resume.name : "No file chosen"}
+                  </p>
                 </div>
 
                 <button
@@ -173,7 +216,9 @@ const Profile = () => {
           )}
         </div>
 
-        {isModalOpen && <IFrameModel resumeUrl={user?.resumeUrl} toggleModal={toggleModal} />}
+        {isModalOpen && (
+          <IFrameModel resumeUrl={user?.resumeUrl} toggleModal={toggleModal} />
+        )}
       </div>
 
       <div className="flex justify-center mt-6">
@@ -185,7 +230,9 @@ const Profile = () => {
         </button>
       </div>
 
-      {showApplications && user?.applications && <JobApplicationsForUser applications={user.applications} />}
+      {showApplications && user?.applications && (
+        <JobApplicationsForUser applications={user.applications} />
+      )}
     </div>
   );
 };

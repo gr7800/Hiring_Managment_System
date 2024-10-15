@@ -4,7 +4,6 @@ import {
   createJob as createJobService,
   updateJob as updateJobService,
   deleteJob as deleteJobService,
-  applyForJob,
   getJobById,
   getMyJob,
 } from "../services/jobServices";

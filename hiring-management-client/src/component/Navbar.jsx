@@ -45,7 +45,7 @@ const Navbar = () => {
       </div>
 
       <nav
-        className={`fixed md:relative top-16 md:top-0 right-0 transition-transform duration-300 ease-in-out transform ${isOpen ? "translate-x-0" : "translate-x-full"} md:translate-x-0 z-50 shadow-md md:shadow-none md:flex-row md:gap-8`}
+        className={`fixed bg-gray-100 md:relative top-16 md:top-0 right-0 transition-transform duration-300 ease-in-out transform ${isOpen ? "translate-x-0" : "translate-x-full"} md:translate-x-0 z-50 shadow-md md:shadow-none md:flex-row md:gap-8`}
       >
         <ul className="flex flex-col md:flex-row gap-5 md:gap-8 justify-center items-center p-5 md:p-0">
           <li>
