@@ -16,7 +16,7 @@ const Home = () => {
           </p>
           <Link
             to="/jobs"
-            className="bg-white text-[#1f84b9] font-semibold py-3 px-8 rounded-lg shadow-lg shadow-[#1f84b9] shadow-[#1f84b9] hover:bg-gray-200 transition-colors duration-300"
+            className="bg-white text-[#1f84b9] font-semibold py-3 px-8 rounded-lg shadow-lg shadow-[#1f84b9] hover:bg-gray-200 transition-colors duration-300"
           >
             Explore Jobs
           </Link>
