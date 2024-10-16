@@ -155,7 +155,7 @@ const Signup = () => {
             <button
               type="submit"
               disabled={isSubmitting || loading}
-              className="w-full p-4 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition-colors duration-300 focus:outline-none"
+              className="w-full p-4 bg-blue-500 text-white font-semibold rounded hover:buttonbg transition-colors duration-300 focus:outline-none"
             >
               {loading ? "Registering..." : "Sign Up"}
             </button>

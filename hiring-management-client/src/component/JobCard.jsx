@@ -7,7 +7,7 @@ const JobCard = ({ job, onDelete, onUpdate }) => {
   const {pathname} = useLocation();
 
   return (
-    <div className="job-card border border-gray-300 rounded-lg shadow-md p-7 bg-white hover:shadow-lg transition-shadow duration-300">
+    <div className="job-card border border-gray-300 rounded-lg shadow-[#1f84b9] shadow-md p-7 bg-white hover:shadow-lg transition-shadow duration-300 text-[#1f84b9]">
       <h3 className="text-xl font-semibold mb-2">{job.title}</h3>
       <p className="text-gray-600 mb-4">{job.description}</p>
       <div className="text-gray-700 mb-2">
@@ -37,11 +37,11 @@ const JobCard = ({ job, onDelete, onUpdate }) => {
       <div className="text-gray-700 mb-4">
         <strong>Updated On:</strong> {new Date(job.updatedAt).toLocaleDateString()}
       </div>
-      <div className="flex space-x-2">
-        {(["HR", "Manager"].includes(role)&&pathname==="/admin") ? (
+      <div className="flex flex-wrap justify-start gap-4">
+        {(["HR", "Manager"].includes(role)&&pathname==="/hr/dashboard") ? (
           <>
             <button
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200"
+              className="buttonbg text-white px-4 py-2 rounded hover:buttonbg transition duration-200"
               onClick={() => onUpdate(job)}
             >
               Update
@@ -54,7 +54,7 @@ const JobCard = ({ job, onDelete, onUpdate }) => {
             </button>
             <Link
               to={`/jobs/${job._id}`}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200"
+              className="buttonbg text-white px-4 py-2 rounded hover:buttonbg transition duration-200 overflow-ellipsis line-clamp-1"
             >
               Manage Applications
             </Link>
@@ -62,7 +62,7 @@ const JobCard = ({ job, onDelete, onUpdate }) => {
         ) : (
           <Link
             to={`/jobs/${job._id}`}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200"
+            className="buttonbg text-white px-4 py-2 rounded hover:buttonbg transition duration-200"
           >
             See More
           </Link>

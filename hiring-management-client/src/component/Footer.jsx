@@ -29,7 +29,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="w-full bg-gray-100 text-gray-600 py-8 font-medium shadow-md">
+    <footer className="w-full bg-gray-100 text-[#1f84b9] py-8 font-medium shadow-md">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full flex justify-center items-center">
         <div className="flex flex-col justify-center gap-4 w-full lg:w-3/5 md:w-4/5 sm:w-11/12">
           <ul className="flex justify-center space-x-8 w-full">

@@ -90,7 +90,7 @@ const Contact = () => {
 
                         <button
                             type="submit"
-                            className="bg-blue-600 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-700 transition duration-300"
+                            className="buttonbg text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-700 transition duration-300"
                             disabled={isSubmitting}
                         >
                             {isSubmitting ? "Submitting..." : "Submit"}

@@ -87,7 +87,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={isSubmitting || loading}
-              className={`w-full p-4 bg-blue-600 text-white font-semibold rounded-lg transition duration-300 hover:bg-blue-700 ${
+              className={`w-full p-4 buttonbg text-white font-semibold rounded-lg transition duration-300 hover:bg-blue-700 ${
                 loading ? "cursor-not-allowed" : ""
               }`}
             >

@@ -15,7 +15,7 @@ export const fetchJobs = createAsyncThunk(
       return await getAllJobs(searchTerm, page, limit);
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch jobs."
+        error.response?.data?.message || "No Match Found!"
       );
     }
   }

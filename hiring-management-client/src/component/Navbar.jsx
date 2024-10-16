@@ -12,20 +12,18 @@ import { resetApplicationDetails } from "../redux/slices/applicationSlice";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const { pathname } = useLocation();
   const { user, auth, token } = useSelector((state) => state.auth);
   const role = user?.role;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
 
   useEffect(() => {
     if (!user && token) {
       dispatch(fetchUserProfile())
         .then((res) => {
-          if (res?.payload == "Invalid token") {
+          if (res?.payload === "Invalid token") {
             toast.warning(res?.payload);
             navigate("/login");
           }
@@ -34,7 +32,7 @@ const Navbar = () => {
           toast.error(error);
         });
     }
-  }, []);
+  }, [dispatch, navigate, token, user]);
 
   useEffect(() => {
     dispatch(clearMessage());
@@ -42,8 +40,17 @@ const Navbar = () => {
     dispatch(resetApplicationDetails());
   }, [pathname]);
 
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
+
   return (
-    <div className="w-full bg-gray-100 flex justify-between items-center px-10 shadow-md fixed top-0 z-20 text-gray-800 font-medium">
+    <div className="w-full bg-gray-100 flex justify-between items-center px-10 shadow-md fixed top-0 z-20 text-[#1f84b9] font-medium">
       <Link to="/" className="flex items-center">
         <img
           src={logo}
@@ -52,78 +59,95 @@ const Navbar = () => {
         />
       </Link>
 
-      <div className="block md:hidden ml-3 cursor-pointer" onClick={toggleMenu}>
-        {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+      <div className="relative min-w-[100px] flex justify-end">
+        <CgProfile
+          size={24}
+          className={`cursor-pointer ${
+            pathname === "/profile" && "text-[#1f84b9]"
+          }`}
+          onClick={toggleDropdown}
+        />
+        {dropdownOpen && (
+          <div className="absolute right-0 mt-7 bg-gray-100 shadow-lg shadow-[#1f84b9] rounded-md z-50">
+            <ul className="flex flex-col">
+              <li
+                className={`${
+                  pathname === "/jobs" && "bg-[#1f84b9] text-white"
+                } `}
+              >
+                <Link
+                  to="/jobs"
+                  className={`block px-4 py-2 hover:bg-gray-200 transition-colors duration-200`}
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  Jobs
+                </Link>
+              </li>
+              <li
+                className={`${
+                  pathname === "/my-applications" && "bg-[#1f84b9] text-white"
+                } `}
+              >
+                <Link
+                  to="/my-applications"
+                  className={`block px-4 py-2 hover:bg-gray-200 transition-colors duration-200`}
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  Applications
+                </Link>
+              </li>
+              <li
+                className={`${
+                  pathname === "/profile" && "bg-[#1f84b9] text-white"
+                } `}
+              >
+                <Link
+                  to="/profile"
+                  className={`block px-4 py-2 hover:bg-gray-200 transition-colors duration-200`}
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  Profile
+                </Link>
+              </li>
+              {token && user && (role === "HR" || role === "Manager") && (
+                <li
+                  className={`${
+                    pathname === "/hr/dashboard" && "bg-[#1f84b9] text-white"
+                  } `}
+                >
+                  <Link
+                    to="/hr/dashboard"
+                    className={`block px-4 py-2 hover:bg-gray-200 transition-colors duration-200 text-nowrap whitespace-nowrap line-clamp-1`}
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    Hr Dashboard
+                  </Link>
+                </li>
+              )}
+              <li>
+                {auth || token ? (
+                  <p
+                    onClick={handleLogout}
+                    className={`block px-4 py-2 hover:bg-gray-200 transition-colors duration-200 cursor-pointer`}
+                  >
+                    Log out
+                  </p>
+                ) : (
+                  <Link
+                    to="/login"
+                    className={`block px-4 py-2 hover:bg-gray-200 transition-colors duration-200 ${
+                      pathname === "/jobs" && "bg-[#1f84b9] text-white"
+                    } `}
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    Login
+                  </Link>
+                )}
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
-
-      <nav
-        className={`fixed bg-gray-100 md:relative top-16 md:top-0 right-0 transition-transform duration-300 ease-in-out transform ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        } md:translate-x-0 z-50 shadow-md md:shadow-none md:flex-row md:gap-8`}
-      >
-        <ul className="flex flex-col md:flex-row gap-5 md:gap-8 justify-center items-center p-5 md:p-0">
-          <li>
-            <Link
-              to="/jobs"
-              className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${
-                pathname === "/jobs" && "text-blue-600"
-              }`}
-              onClick={() => setIsOpen(false)}
-            >
-              Jobs
-            </Link>
-          </li>
-          {token && user && (role === "HR" || role === "Manager") && (
-            <li>
-              <Link
-                to="/admin"
-                className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${
-                  pathname === "/admin" && "text-blue-600"
-                }`}
-                onClick={() => setIsOpen(false)}
-              >
-                Admin
-              </Link>
-            </li>
-          )}
-          <li>
-            {auth || token ? (
-              <p
-                onClick={() => {
-                  dispatch(logout());
-                  navigate("/login");
-                }}
-                className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${
-                  pathname === "/login" && "text-blue-600"
-                }`}
-              >
-                Logout
-              </p>
-            ) : (
-              <Link
-                to="/login"
-                className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${
-                  pathname === "/login" && "text-blue-600"
-                }`}
-                onClick={() => setIsOpen(false)}
-              >
-                Login
-              </Link>
-            )}
-          </li>
-          <li>
-            <Link
-              to="/profile"
-              className={`hover:underline hover:text-blue-600 transition-colors duration-200 ${
-                pathname === "/profile" && "text-blue-600"
-              }`}
-              onClick={() => setIsOpen(false)}
-            >
-              <CgProfile size={24} />
-            </Link>
-          </li>
-        </ul>
-      </nav>
     </div>
   );
 };

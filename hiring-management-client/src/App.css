@@ -28,3 +28,22 @@
   border-radius: 4px;
   border: 1px solid #ddd;
 }
+
+.buttonbg {
+  background: rgb(14, 63, 97);
+  background: linear-gradient(to right, #0e3f61 0%, #29a3e0 100%);
+
+  /* background: radial-gradient(
+    circle,
+    rgba(14, 63, 97, 1) 0%,
+    rgba(9, 9, 121, 1) 30%,
+    rgba(41, 163, 224, 1) 64%
+  );
+  */
+  transform: background 10s; 
+}
+
+.buttonbg:hover {
+  background: linear-gradient(to right, #0e3f61 20%, #29a3e0 80%);
+}
+

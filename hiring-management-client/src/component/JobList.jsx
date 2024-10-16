@@ -18,7 +18,7 @@ const JobList = ({ searchTerm, currentPage, jobsPerPage, setCurrentPage, handleU
     if (role && ((role !== "HR" && role !== "Manager")||pathname=="/jobs")) {
       dispatch(fetchJobs({ searchTerm, page: currentPage, limit: jobsPerPage }));
     }
-  }, [currentPage, jobsPerPage, searchTerm, role]);
+  }, [currentPage, jobsPerPage, role]);
 
   const handleDelete = async (job) => {
     dispatch(clearMessage());

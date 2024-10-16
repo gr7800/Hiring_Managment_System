@@ -7,7 +7,7 @@ const HomeWrapper = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-grow bg-[#e5faff] py-20">
+      <main className="flex-grow bg-[#e5fafe] py-[72px]">
         <Outlet />
       </main>
       <Footer />

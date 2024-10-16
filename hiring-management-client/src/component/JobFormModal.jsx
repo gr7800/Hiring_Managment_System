@@ -64,7 +64,7 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-container shadow-lg p-8 bg-white rounded">
+      <div className="modal-container shadow-lg shadow-[#1f84b9] p-8 bg-white rounded">
         <form onSubmit={handleSubmit}>
           <h2 className="text-xl font-semibold mb-4">{isUpdate ? "Update Job" : "Create Job"}</h2>
           <input
@@ -147,7 +147,7 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
             <button type="button" className="mr-4 bg-red-500 text-white p-2 rounded hover:bg-red-600 transition duration-200" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-200">
+            <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:buttonbg transition duration-200">
               {isUpdate ? "Update Job" : "Create Job"}
             </button>
           </div>

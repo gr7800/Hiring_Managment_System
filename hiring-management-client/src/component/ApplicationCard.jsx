@@ -28,7 +28,7 @@ const ApplicationCard = ({ application }) => {
   };
 
   return (
-    <div className="border rounded-lg p-6 mb-6 shadow-lg bg-white hover:shadow-xl transition-shadow">
+    <div className="border rounded-lg p-6 mb-6 shadow-lg shadow-[#1f84b9] bg-white hover:shadow-xl transition-shadow">
       <h3 className="text-xl font-semibold text-blue-700 mb-2">{application.job?.title || "Job Title"}</h3>
       <p className="text-gray-600 mb-4">
         <strong>Location:</strong> {application.job?.location || "N/A"}
@@ -62,7 +62,7 @@ const ApplicationCard = ({ application }) => {
 
       <div className="flex gap-4">
         <button
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          className="buttonbg text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
           onClick={() => setShowResume(true)}
         >
           View Resume

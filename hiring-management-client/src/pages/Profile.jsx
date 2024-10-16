@@ -6,14 +6,12 @@ import * as Yup from "yup";
 import IFrameModel from "../component/IFrameModel";
 import defaultProfile from "../assets/DefaultProfile.jpg";
 import { toast } from "react-toastify";
-import JobApplicationsForUser from "../component/JobApplicationsForUser";
 
 const Profile = () => {
   const { user, loading, error } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [resume, setResume] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showApplications, setShowApplications] = useState(false);
 
   useEffect(() => {
     dispatch(fetchUserProfile());
@@ -55,16 +53,16 @@ const Profile = () => {
 
   return (
     <div className="w-full px-4 lg:px-10">
-      <div className="container mx-auto mt-10 p-8 shadow-lg rounded-lg max-w-2xl bg-white">
-        <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">
-          User Profile
+      <div className="container mx-auto mt-10 p-8 shadow-lg shadow-[#1f84b9] rounded-lg max-w-2xl bg-white">
+        <h1 className="text-4xl font-bold text-center text-[#1f84b9] mb-8">
+          Profile
         </h1>
         {error && <p className="text-red-500 text-center">{error}</p>}
         <div className="flex flex-col items-center space-y-6">
           <img
             src={user?.profilePicture || defaultProfile}
             alt="Profile"
-            className="w-32 h-32 rounded-full object-cover shadow-md border-2 border-gray-300"
+            className="w-32 h-32 rounded-full object-cover shadow-[#1f84b9] shadow-md border-[6px] border-[#1f84b9]"
           />
           <Formik
             initialValues={{
@@ -161,7 +159,7 @@ const Profile = () => {
                 />
 
                 <div className="relative">
-                  <label className="block mb-2 text-sm font-medium text-gray-700">
+                  <label className="block mb-2 text-sm font-medium text-[#1f84b9]">
                     Upload Resume
                   </label>
                   <input
@@ -179,7 +177,7 @@ const Profile = () => {
                     component="div"
                     className="text-red-500 text-sm mt-1"
                   />
-                  <p className="text-gray-500 mt-2">
+                  <p className="text-[#1f84b9] mt-2">
                     {resume ? resume.name : "No file chosen"}
                   </p>
                 </div>
@@ -187,7 +185,7 @@ const Profile = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting || loading}
-                  className="w-full p-4 bg-blue-500 text-white font-semibold rounded shadow hover:bg-blue-600 transition duration-200"
+                  className="w-full p-4 buttonbg text-white font-semibold rounded shadow hover:buttonbg transition duration-200"
                 >
                   {loading ? "Updating..." : "Update Profile"}
                 </button>
@@ -197,7 +195,7 @@ const Profile = () => {
 
           {user?.resumeUrl && (
             <div className="mt-6 text-center">
-              <h2 className="text-xl font-semibold">Current Resume:</h2>
+              <h2 className="text-xl font-semibold text-[#1f84b9]">Current Resume:</h2>
               <a
                 href={user.resumeUrl}
                 target="_blank"
@@ -208,7 +206,7 @@ const Profile = () => {
               </a>
               <button
                 onClick={toggleModal}
-                className="mt-4 mx-5 p-2 bg-green-500 text-white rounded shadow hover:bg-green-600 transition duration-200"
+                className="mt-4 mx-5 p-2 buttonbg text-white rounded shadow  transition duration-200"
               >
                 Show Resume
               </button>
@@ -220,19 +218,6 @@ const Profile = () => {
           <IFrameModel resumeUrl={user?.resumeUrl} toggleModal={toggleModal} />
         )}
       </div>
-
-      <div className="flex justify-center mt-6">
-        <button
-          onClick={() => setShowApplications((prev) => !prev)}
-          className="p-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 transition duration-200"
-        >
-          {showApplications ? "Hide Applications" : "Show Applications"}
-        </button>
-      </div>
-
-      {showApplications && user?.applications && (
-        <JobApplicationsForUser applications={user.applications} />
-      )}
     </div>
   );
 };

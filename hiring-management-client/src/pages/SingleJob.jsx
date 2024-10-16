@@ -72,7 +72,7 @@ const SingleJob = () => {
         <div className="w-full min-h-screen bg-gray-100 px-10 py-10">
             {singleJob ? (
                 <div className="w-full flex flex-col justify-center items-center gap-8">
-                    <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg p-8 mx-4">
+                    <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg shadow-[#1f84b9] p-8 mx-4">
                         <h2 className="text-2xl font-bold text-gray-800 mb-4">{singleJob.title}</h2>
                         <div className="space-y-2 text-gray-600 mb-5">
                             <p><span className="font-semibold">Description:</span> {singleJob.description}</p>
@@ -87,14 +87,14 @@ const SingleJob = () => {
 
                         {role === "HR" || role === "Manager" ? (
                             <button
-                                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200"
+                                className="bg-blue-500 text-white px-4 py-2 rounded hover:buttonbg transition duration-200"
                                 onClick={handleSeeApplication}
                             >
                                 {showApplications ? 'Hide Applications' : 'See Applications'}
                             </button>
                         ) : (
                             <button
-                                className={`bg-blue-600 text-white px-6 py-2 rounded-lg shadow transition duration-300 ease-in-out ${isApplied ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`}
+                                className={`buttonbg text-white px-6 py-2 rounded-lg shadow transition duration-300 ease-in-out ${isApplied ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`}
                                 onClick={handleApplyToJob}
                                 disabled={isApplied}
                             >
