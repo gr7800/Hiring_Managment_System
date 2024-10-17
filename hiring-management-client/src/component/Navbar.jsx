@@ -61,14 +61,14 @@ const Navbar = () => {
 
       <div className="relative min-w-[100px] flex justify-end">
         <CgProfile
-          size={24}
+          size={34}
           className={`cursor-pointer ${
             pathname === "/profile" && "text-[#1f84b9]"
           }`}
           onClick={toggleDropdown}
         />
         {dropdownOpen && (
-          <div className="absolute right-0 mt-7 bg-gray-100 shadow-lg shadow-[#1f84b9] rounded-md z-50">
+          <div className="absolute right-0 mt-9 bg-gray-100 shadow-lg shadow-[#1f84b9] rounded-md z-50">
             <ul className="flex flex-col">
               <li
                 className={`${
