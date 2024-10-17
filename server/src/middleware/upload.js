@@ -1,13 +1,11 @@
 import path from "path";
 import multer from "multer";
-import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.resolve();
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, path.resolve(__dirname, "../uploads"));
+    callback(null, path.join(__dirname, "src/uploads"));
   },
   filename: (req, file, callback) => {
     const timestamp = Date.now();

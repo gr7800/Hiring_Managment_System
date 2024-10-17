@@ -2,9 +2,37 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  name: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function (v) {
+        return /^[a-zA-Z\s]+$/.test(v); 
+      },
+      message: (props) => `${props.value} is not a valid name!`,
+    },
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    validate: {
+      validator: function (v) {
+        return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v); 
+      },
+      message: (props) => `${props.value} is not a valid email!`,
+    },
+  },
+  password: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function (v) {
+        return /^.{6}$/.test(v); 
+      },
+      message: (props) => "Password must be exactly 6 characters long!",
+    },
+  },
   role: {
     type: String,
     enum: ["Applicant", "HR", "Manager"],
