@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
-import logo from "../assets/logo.webp";
+import logo from "../assets/dream_jobing.png";
 import { fetchUserProfile, logout } from "../redux/slices/authSlice";
 import { toast } from "react-toastify";
 import { clearMessage } from "../redux/slices/jobSlice";

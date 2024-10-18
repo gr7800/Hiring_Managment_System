@@ -9,13 +9,13 @@ import { toast } from "react-toastify";
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, token } = useSelector((state) => state.auth);
+  const { auth, loading, error, token } = useSelector((state) => state.auth);
 
-  // useEffect(() => {
-  //   if (token) {
-  //     navigate("/profile");
-  //   }
-  // }, [auth, navigate]);
+  useEffect(() => {
+    if (token) {
+      navigate("/profile");
+    }
+  }, [auth]);
 
   const initialValues = {
     email: "",
