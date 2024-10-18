@@ -1,16 +1,22 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { fetchUserProfile } from "../redux/slices/authSlice";
 
 const JobApplicationsForUser = () => {
   const applications =
     useSelector((state) => state?.auth?.user?.applications) || [];
+  const dispatch  = useDispatch()
 
   const [expandedId, setExpandedId] = useState(null);
 
   const toggleExpand = (id) => {
     setExpandedId((prev) => (prev === id ? null : id));
   };
+
+  useEffect(()=>{
+    dispatch(fetchUserProfile());
+  },[])
 
   return (
     <div className="px-10 py-10">

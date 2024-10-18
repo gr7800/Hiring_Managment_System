@@ -4,14 +4,16 @@ import { fetchUserProfile, updateUserProfile } from "../redux/slices/authSlice";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import IFrameModel from "../component/IFrameModel";
-import defaultProfile from "../assets/DefaultProfile.jpg";
+import defaultProfile from "../assets/DefaultProflePic.webp";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const { user, loading, error } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [resume, setResume] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchUserProfile());
@@ -40,8 +42,9 @@ const Profile = () => {
       setSubmitting(false);
       if (res?.payload?.message) {
         toast.success("Profile Updated Successfully!");
-        dispatch(fetchUserProfile())
-      }else if(res?.payload){
+        dispatch(fetchUserProfile());
+        navigate(-1);
+      } else if (res?.payload) {
         toast.warning(res?.payload);
       }
     });
@@ -195,7 +198,9 @@ const Profile = () => {
 
           {user?.resumeUrl && (
             <div className="mt-6 text-center">
-              <h2 className="text-xl font-semibold text-[#1f84b9]">Current Resume:</h2>
+              <h2 className="text-xl font-semibold text-[#1f84b9]">
+                Current Resume:
+              </h2>
               <a
                 href={user.resumeUrl}
                 target="_blank"

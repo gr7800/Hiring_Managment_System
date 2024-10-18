@@ -11,7 +11,6 @@ import { clearMessage as cleanIt } from "../redux/slices/authSlice";
 import { resetApplicationDetails } from "../redux/slices/applicationSlice";
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { pathname } = useLocation();
   const { user, auth, token } = useSelector((state) => state.auth);
@@ -38,6 +37,7 @@ const Navbar = () => {
     dispatch(clearMessage());
     dispatch(cleanIt());
     dispatch(resetApplicationDetails());
+    setDropdownOpen(false);
   }, [pathname]);
 
   const toggleDropdown = () => {
