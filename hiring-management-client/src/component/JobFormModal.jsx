@@ -6,14 +6,14 @@ import { toast } from "react-toastify";
 const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    title: "Frontend Developer",
-    description: "We are looking for a qualified Front-end developer to join our IT team. You will be responsible for building the ‘client-side’ of our web applications. You should be able to translate our company and customer needs into functional and appealing interactive applications.",
-    location: "Banglore",
-    salaryRange: "50000-700000",
-    jobType: "Full-time",
-    remoteOrOnsite: "Remote",
-    experiences: "3 year",
-    educationalRequirements: "Master's",
+    title: "",
+    description: "",
+    location: "",
+    salaryRange: "",
+    jobType: "",
+    remoteOrOnsite: "",
+    experiences: "",
+    educationalRequirements: "",
   });
 
   useEffect(() => {

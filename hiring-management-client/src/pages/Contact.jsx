@@ -1,11 +1,18 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import emailjs from "emailjs-com";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+const service_id = import.meta.env.VITE_SERVICE_ID;
+const template_id = import.meta.env.VITE_TEMPLATE_ID;
+const Baspublic_id = import.meta.env.VITE_PUBLIC_KEY;
 
 const Contact = () => {
+    const { user } = useSelector((state) => state.auth);
     const initialValues = {
-        name: "",
-        email: "",
+        name: user?.name || "",
+        email: user?.email || "",
         message: "",
     };
 
@@ -22,79 +29,101 @@ const Contact = () => {
     });
 
     const handleSubmit = (values, { resetForm }) => {
-        console.log("Form Data:", values);
-        resetForm();
+        const templateParams = {
+            from_name: values.name,
+            from_email: values.email,
+            message: values.message,
+        };
+
+        emailjs.send(
+            'service_2kj43cp',
+            'template_btbca8k',
+            templateParams,
+            'TqmpDK0EsikZ2ct1H'
+        )
+            .then((response) => {
+                console.log("Email sent successfully!", response.status, response.text);
+                resetForm();
+                toast.success("Message sent successfully!");
+            })
+            .catch((err) => {
+                console.log("Failed to send email:", err);
+                toast.error("Failed to send message. Please try again.");
+            });
     };
 
     return (
-        <div className="max-w-lg mx-auto p-8 bg-white shadow-md rounded-lg mt-10">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6">Contact Us</h2>
+        <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-xl mt-12 shadow-[#1f84b9]">
+            <h2 className="text-3xl font-bold text-[#1f84b9] mb-8 text-center">Get in Touch</h2>
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={handleSubmit}
             >
                 {({ isSubmitting }) => (
-                    <Form className="flex flex-col gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700" htmlFor="name">
-                                Name
+                    <Form className="space-y-6">
+                        <div className="relative">
+                            <label className="block text-sm font-semibold text-[#1f84b9]" htmlFor="name">
+                                Full Name
                             </label>
                             <Field
                                 id="name"
                                 name="name"
                                 type="text"
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                className="mt-2 block w-full p-3 shadow-[#1f84b9] border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition"
                             />
                             <ErrorMessage
                                 name="name"
                                 component="div"
-                                className="text-red-500 text-sm mt-1"
+                                className="absolute text-red-500 text-sm mt-1"
                             />
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700" htmlFor="email">
-                                Email
+                        <div className="relative">
+                            <label className="block text-sm font-semibold text-[#1f84b9]" htmlFor="email">
+                                Email Address
                             </label>
                             <Field
                                 id="email"
                                 name="email"
                                 type="email"
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                className="mt-2 block w-full p-3 border shadow-[#1f84b9] border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition"
                             />
                             <ErrorMessage
                                 name="email"
                                 component="div"
-                                className="text-red-500 text-sm mt-1"
+                                className="absolute text-red-500 text-sm mt-1"
                             />
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700" htmlFor="message">
-                                Message
+                        <div className="relative">
+                            <label className="block text-sm font-semibold text-[#1f84b9]" htmlFor="message">
+                                Your Message
                             </label>
                             <Field
                                 id="message"
                                 name="message"
                                 as="textarea"
                                 rows="4"
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                className="mt-2 block w-full p-3 border border-gray-300 rounded-md shadow-sm shadow-[#1f84b9] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition"
                             />
                             <ErrorMessage
                                 name="message"
                                 component="div"
-                                className="text-red-500 text-sm mt-1"
+                                className="absolute text-red-500 text-sm mt-1"
                             />
                         </div>
 
-                        <button
-                            type="submit"
-                            className="buttonbg text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-700 transition duration-300"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? "Submitting..." : "Submit"}
-                        </button>
+                        <div className="text-center">
+                            <button
+                                type="submit"
+                                className={`w-full py-3 px-4 font-semibold rounded-lg shadow-md shadow-[#1f84b9] bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 ${isSubmitting ? "cursor-not-allowed opacity-70" : ""
+                                    }`}
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? "Submitting..." : "Send Message"}
+                            </button>
+                        </div>
                     </Form>
                 )}
             </Formik>

@@ -19,6 +19,12 @@ const Profile = () => {
     dispatch(fetchUserProfile());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (user === null) {
+      navigate("/login");
+    }
+  }, [user])
+
   const validationSchema = Yup.object({
     experience: Yup.string().optional(),
     education: Yup.string().optional(),

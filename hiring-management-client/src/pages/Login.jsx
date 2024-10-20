@@ -9,13 +9,13 @@ import { toast } from "react-toastify";
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { auth, loading, error, token } = useSelector((state) => state.auth);
+  const { auth, user, loading, error, token } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (token) {
+    if (user && token) {
       navigate("/profile");
     }
-  }, [auth]);
+  }, [user]);
 
   const initialValues = {
     email: "",
@@ -87,9 +87,8 @@ const Login = () => {
             <button
               type="submit"
               disabled={isSubmitting || loading}
-              className={`w-full p-4 buttonbg text-white font-semibold rounded-lg transition duration-300 hover:bg-blue-700 ${
-                loading ? "cursor-not-allowed" : ""
-              }`}
+              className={`w-full p-4 buttonbg text-white font-semibold rounded-lg transition duration-300 hover:bg-blue-700 ${loading ? "cursor-not-allowed" : ""
+                }`}
             >
               {loading ? "Logging in..." : "Login"}
             </button>

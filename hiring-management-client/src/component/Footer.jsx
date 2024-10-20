@@ -7,22 +7,22 @@ const Footer = () => {
 
   const socialLinks = [
     {
-      href: "https://www.facebook.com/cimet",
+      href: "https://www.facebook.com/guddu.tiwari.90813236",
       icon: <FaFacebookF />,
       color: "text-blue-600 hover:text-blue-800",
     },
     {
-      href: "https://www.instagram.com/cimet",
+      href: "https://www.instagram.com/tiwariji78001/",
       icon: <FaInstagram />,
       color: "text-pink-500 hover:text-pink-700",
     },
     {
-      href: "https://github.com/cimet",
+      href: "https://github.com/gr7800",
       icon: <FaGithub />,
       color: "text-gray-700 hover:text-gray-900",
     },
     {
-      href: "https://www.linkedin.com/company/cimet",
+      href: "https://www.linkedin.com/in/guddu-tiwari-57b841230",
       icon: <FaLinkedin />,
       color: "text-blue-500 hover:text-blue-700",
     },

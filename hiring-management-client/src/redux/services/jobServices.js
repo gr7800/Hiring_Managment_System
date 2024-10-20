@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BaseUrl } from "../../utils/constant";
+const BaseUrl = import.meta.env.VITE_BASEURL;
 
 const API_URL = `${BaseUrl}/jobs`;
 

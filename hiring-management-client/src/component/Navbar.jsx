@@ -14,7 +14,7 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { pathname } = useLocation();
   const { user, auth, token } = useSelector((state) => state.auth);
-  const role = user?.role;
+  const role = user?.role||"Applicant";
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -50,7 +50,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="w-full bg-gray-100 flex justify-between items-center px-10 shadow-md fixed top-0 z-20 text-[#1f84b9] font-medium">
+    <div className="w-full bg-gray-100 flex justify-between items-center px-10 shadow-md shadow-[#1f84b9] fixed top-0 z-20 text-[#1f84b9] font-medium">
       <Link to="/" className="flex items-center">
         <img
           src={logo}
@@ -62,18 +62,16 @@ const Navbar = () => {
       <div className="relative min-w-[100px] flex justify-end">
         <CgProfile
           size={34}
-          className={`cursor-pointer ${
-            pathname === "/profile" && "text-[#1f84b9]"
-          }`}
+          className={`cursor-pointer ${pathname === "/profile" && "text-[#1f84b9]"
+            }`}
           onClick={toggleDropdown}
         />
         {dropdownOpen && (
-          <div className="absolute right-0 mt-9 bg-gray-100 shadow-lg shadow-[#1f84b9] rounded-md z-50">
+          <div className="absolute right-0 mt-9 bg-gray-100 shadow-md shadow-[#1f84b9] rounded-md z-50">
             <ul className="flex flex-col">
               <li
-                className={`${
-                  pathname === "/jobs" && "bg-[#1f84b9] text-white"
-                } `}
+                className={`${pathname === "/jobs" && "bg-[#1f84b9] text-white"
+                  } `}
               >
                 <Link
                   to="/jobs"
@@ -83,10 +81,9 @@ const Navbar = () => {
                   Jobs
                 </Link>
               </li>
-              <li
-                className={`${
-                  pathname === "/my-applications" && "bg-[#1f84b9] text-white"
-                } `}
+              {user?.role === "Applicant" && <li
+                className={`${pathname === "/my-applications" && "bg-[#1f84b9] text-white"
+                  } `}
               >
                 <Link
                   to="/my-applications"
@@ -95,11 +92,10 @@ const Navbar = () => {
                 >
                   Applications
                 </Link>
-              </li>
+              </li>}
               <li
-                className={`${
-                  pathname === "/profile" && "bg-[#1f84b9] text-white"
-                } `}
+                className={`${pathname === "/profile" && "bg-[#1f84b9] text-white"
+                  } `}
               >
                 <Link
                   to="/profile"
@@ -111,9 +107,8 @@ const Navbar = () => {
               </li>
               {token && user && (role === "HR" || role === "Manager") && (
                 <li
-                  className={`${
-                    pathname === "/hr/dashboard" && "bg-[#1f84b9] text-white"
-                  } `}
+                  className={`${pathname === "/hr/dashboard" && "bg-[#1f84b9] text-white"
+                    } `}
                 >
                   <Link
                     to="/hr/dashboard"
@@ -135,9 +130,8 @@ const Navbar = () => {
                 ) : (
                   <Link
                     to="/login"
-                    className={`block px-4 py-2 hover:bg-gray-200 transition-colors duration-200 ${
-                      pathname === "/jobs" && "bg-[#1f84b9] text-white"
-                    } `}
+                    className={`block px-4 py-2 hover:bg-gray-200 transition-colors duration-200 ${pathname === "/jobs" && "bg-[#1f84b9] text-white"
+                      } `}
                     onClick={() => setDropdownOpen(false)}
                   >
                     Login
