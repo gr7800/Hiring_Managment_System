@@ -1,12 +1,13 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import ApplicationCard from "./ApplicationCard";
+import LoadingScreen from "./LoadingScreen";
 
 const ApplicantsList = () => {
   const { applications, loading, error } = useSelector((state) => state.application);
 
   if (loading) {
-    return <div className="flex justify-center items-center h-40">Loading...</div>;
+    return <LoadingScreen />
   }
 
   if (error) {

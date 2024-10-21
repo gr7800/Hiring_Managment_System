@@ -28,8 +28,8 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
   };
 
   const validateForm = () => {
-    const { title, description, location, salaryRange, experiences, educationalRequirements } = formData;
-    if (!title || !description || !location || !salaryRange || !experiences || !educationalRequirements) {
+    const { title, description, location, salaryRange,jobType, experiences, educationalRequirements } = formData;
+    if (!title || !description || !location || !salaryRange || !jobType || !experiences || !educationalRequirements) {
       toast.error("All fields are required.");
       return false;
     }

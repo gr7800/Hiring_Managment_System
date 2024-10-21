@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchUserProfile } from "../redux/slices/authSlice";
 import { toast } from "react-toastify";
+import LoadingScreen from "../component/LoadingScreen";
 
 const PrivateRoute = ({ children }) => {
     const { user, token, loading } = useSelector((state) => state.auth);
@@ -20,7 +21,7 @@ const PrivateRoute = ({ children }) => {
         }
     }, [token, user, navigate, dispatch]);
 
-    if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    if (loading) return <LoadingScreen />;
 
     return user ? children : null;
 };

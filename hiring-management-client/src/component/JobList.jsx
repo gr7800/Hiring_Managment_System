@@ -5,9 +5,10 @@ import JobCard from "./JobCard";
 import Pagination from "./Pagination";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
+import LoadingScreen from "./LoadingScreen";
 
 const JobList = ({ searchTerm, currentPage, jobsPerPage, setCurrentPage, handleUpdate }) => {
-  
+
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { jobs, loading, totalPage, error, message } = useSelector((state) => state.jobs);
@@ -15,7 +16,7 @@ const JobList = ({ searchTerm, currentPage, jobsPerPage, setCurrentPage, handleU
 
   useEffect(() => {
     dispatch(clearMessage());
-    if (role && ((role !== "HR" && role !== "Manager")||pathname=="/jobs")) {
+    if (role && ((role !== "HR" && role !== "Manager") || pathname == "/jobs")) {
       dispatch(fetchJobs({ searchTerm, page: currentPage, limit: jobsPerPage }));
     }
   }, [currentPage, jobsPerPage, role]);
@@ -34,10 +35,11 @@ const JobList = ({ searchTerm, currentPage, jobsPerPage, setCurrentPage, handleU
       toast.error(error.message);
     }
   };
-
+  if (loading) {
+    return <LoadingScreen />
+  }
   return (
     <div>
-      {loading && <p className="text-gray-500">Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
       {message && <p className="text-green-500">{message}</p>}
 

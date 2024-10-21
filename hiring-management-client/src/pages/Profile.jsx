@@ -7,6 +7,7 @@ import IFrameModel from "../component/IFrameModel";
 import defaultProfile from "../assets/DefaultProflePic.webp";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import LoadingScreen from "../component/LoadingScreen";
 
 const Profile = () => {
   const { user, loading, error } = useSelector((state) => state.auth);
@@ -58,7 +59,7 @@ const Profile = () => {
 
   const toggleModal = () => setIsModalOpen((prev) => !prev);
 
-  if (!user && loading) return <p className="text-center">Loading...</p>;
+  if (!user && loading) return <LoadingScreen />;
 
   return (
     <div className="w-full px-4 lg:px-10">

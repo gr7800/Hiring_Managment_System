@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { fetchUserProfile } from "../redux/slices/authSlice";
 import { toast } from "react-toastify";
+import LoadingScreen from "../component/LoadingScreen";
 
 const SpecialRoute = ({ children }) => {
     const { user, token, loading } = useSelector((state) => state.auth);
@@ -25,7 +26,7 @@ const SpecialRoute = ({ children }) => {
     }, [token, user, navigate, dispatch]);
 
     if (loading) {
-        return <div className="flex justify-center items-center h-screen">Loading...</div>;
+        return <LoadingScreen />;
     }
 
     return user && (user.role === "HR" || user.role === "Manager") ? children : null;

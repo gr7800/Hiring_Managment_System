@@ -9,6 +9,7 @@ import {
 } from "../redux/slices/applicationSlice";
 import useHasApplied from "../hooks/useHashApplied";
 import ApplicantsList from "../component/ApplicantsList";
+import LoadingScreen from "../component/LoadingScreen";
 
 const SingleJob = () => {
   const { jobId } = useParams();
@@ -68,7 +69,7 @@ const SingleJob = () => {
       });
   };
 
-  if (loading) return <p className="text-center">Loading job details...</p>;
+  if (loading) return <LoadingScreen />;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
@@ -128,11 +129,10 @@ const SingleJob = () => {
               </button>
             ) : (
               <button
-                className={`buttonbg text-white px-6 py-2 rounded-lg shadow transition duration-300 ease-in-out ${
-                  isApplied
+                className={`buttonbg text-white px-6 py-2 rounded-lg shadow transition duration-300 ease-in-out ${isApplied
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:bg-blue-700"
-                }`}
+                  }`}
                 onClick={handleApplyToJob}
                 disabled={isApplied}
               >
