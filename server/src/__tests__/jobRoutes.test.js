@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 describe("Job Routes", () => {
   let token;
   let userId;
+  let jobId;
 
   beforeAll(async () => {
     await User.deleteMany();
@@ -31,7 +32,6 @@ describe("Job Routes", () => {
   afterAll(async () => {
     await User.deleteMany();
     await Job.deleteMany();
-    mongoose.connection.close();
   });
 
   it("should create a new job", async () => {
@@ -54,13 +54,16 @@ describe("Job Routes", () => {
     expect(response.status).toBe(201);
     expect(response.body.message).toBe("Job created successfully");
     expect(response.body.job).toHaveProperty("title", jobData.title);
+    expect(response.body.job).toHaveProperty("postedBy", userId.toString());
+
+    jobId = response.body.job._id;
   });
 
   it("should return 400 if required fields are missing", async () => {
     const response = await request(app)
       .post("/jobs")
       .set("Authorization", `Bearer ${token}`)
-      .send({}); // No data
+      .send({});
 
     expect(response.status).toBe(400);
     expect(response.body.message).toBe("All fields are required");
@@ -73,25 +76,22 @@ describe("Job Routes", () => {
   });
 
   it("should get a job by ID", async () => {
-    const job = await Job.findOne();
-
-    const response = await request(app).get(`/jobs/singlejob/${job._id}`);
+    const response = await request(app).get(`/jobs/singlejob/${jobId}`);
     expect(response.status).toBe(200);
-    expect(response.body.job).toHaveProperty("_id", job._id.toString());
+    expect(response.body.job).toHaveProperty("_id", jobId.toString());
   });
 
-  it("should return 404 for non-existent job", async () => {
+  it("should return 400 for invalid job ID format", async () => {
     const response = await request(app).get("/jobs/singlejob/invalidId");
-    expect(response.status).toBe(404);
-    expect(response.body.message).toBe("Job not found");
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe("Invalid job ID format");
   });
 
   it("should update a job", async () => {
-    const job = await Job.findOne();
     const updateData = { title: "Updated Job Title" };
 
     const response = await request(app)
-      .put(`/jobs/${job._id}`)
+      .put(`/jobs/${jobId}`)
       .set("Authorization", `Bearer ${token}`)
       .send(updateData);
 
@@ -100,37 +100,31 @@ describe("Job Routes", () => {
     expect(response.body.job).toHaveProperty("title", updateData.title);
   });
 
-  it("should return 404 if job not found for update", async () => {
+  it("should return 400 for invalid job ID format", async () => {
     const response = await request(app)
       .put("/jobs/invalidId")
       .set("Authorization", `Bearer ${token}`)
       .send({ title: "New Title" });
 
-    expect(response.status).toBe(404);
-    expect(response.body.message).toBe(
-      "Job not found or not authorized to update"
-    );
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe("Invalid job ID format");
   });
 
   it("should delete a job", async () => {
-    const job = await Job.findOne();
-
     const response = await request(app)
-      .delete(`/jobs/${job._id}`)
+      .delete(`/jobs/${jobId}`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(response.status).toBe(200);
     expect(response.body.message).toBe("Job deleted successfully");
   });
 
-  it("should return 404 if job not found for delete", async () => {
+  it("should return 400 for invalid job ID format", async () => {
     const response = await request(app)
       .delete("/jobs/invalidId")
       .set("Authorization", `Bearer ${token}`);
 
-    expect(response.status).toBe(404);
-    expect(response.body.message).toBe(
-      "Job not found or not authorized to delete"
-    );
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe("Invalid job ID format");
   });
 });

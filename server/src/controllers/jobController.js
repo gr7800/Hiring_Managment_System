@@ -14,7 +14,6 @@ export const createJob = async (req, res) => {
       experiences,
       educationalRequirements,
     } = req.body;
-
     if (
       !title ||
       !description ||
@@ -48,8 +47,11 @@ export const createJob = async (req, res) => {
 };
 
 export const updateJob = async (req, res) => {
+  const { jobId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(jobId)) {
+    return res.status(400).json({ message: "Invalid job ID format" });
+  }
   try {
-    const { jobId } = req.params;
     const {
       title,
       description,
@@ -61,7 +63,10 @@ export const updateJob = async (req, res) => {
       educationalRequirements,
     } = req.body;
 
-    const job = await Job.findOne({ _id: jobId, postedBy: req.user._id });
+    const job = await Job.findOne({
+      $and: [{ _id: jobId }, { postedBy: req.user._id }],
+    });
+
     if (!job) {
       return res
         .status(404)
@@ -90,16 +95,19 @@ export const updateJob = async (req, res) => {
 export const deleteJob = async (req, res) => {
   try {
     const { jobId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(jobId)) {
+      return res.status(400).json({ message: "Invalid job ID format" });
+    }
+
     const job = await Job.findOneAndDelete({
-      _id: jobId,
-      postedBy: req.user._id,
+      $and: [{ _id: jobId }, { postedBy: req.user._id }],
     });
     if (!job) {
       return res
         .status(404)
         .json({ message: "Job not found or not authorized to delete" });
     }
-
     res.status(200).json({ message: "Job deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -146,13 +154,14 @@ export const getAllJobs = async (req, res) => {
     res.status(200).json({
       jobs: jobs.map((job) => ({
         ...job.toObject(),
-        postedBy: { name: job.postedBy.name, email: job.postedBy.email },
+        postedBy: { name: job?.postedBy?.name, email: job?.postedBy?.email },
       })),
       totalJobs,
       totalPages: Math.ceil(totalJobs / limit),
       currentPage: Number(page),
     });
   } catch (error) {
+    console.log(error, "error get all");
     res.status(500).json({ message: "Server error", error });
   }
 };
@@ -192,7 +201,9 @@ export const getMyJobs = async (req, res) => {
     const totalJobs = await Job.countDocuments(searchCriteria);
 
     if (jobs.length === 0 && searchTerm) {
-      return res.status(404).json({ message: "No jobs found matching your search" });
+      return res
+        .status(404)
+        .json({ message: "No jobs found matching your search" });
     }
 
     res.status(200).json({
@@ -205,28 +216,40 @@ export const getMyJobs = async (req, res) => {
       currentPage: Number(page),
     });
   } catch (error) {
-    console.error("Error fetching jobs:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-
 export const getJobById = async (req, res) => {
   try {
     const { jobId } = req.params;
-    const job = await Job.findById(jobId).populate("postedBy", "_id name email");
+    if (!mongoose.Types.ObjectId.isValid(jobId)) {
+      return res.status(400).json({ message: "Invalid job ID format" });
+    }
 
+    const job = await Job.findById(jobId).populate(
+      "postedBy",
+      "_id name email"
+    );
     if (!job) {
       return res.status(404).json({ message: "Job not found" });
     }
+
+    const postedBy = job.postedBy
+      ? {
+          _id: job.postedBy._id,
+          name: job.postedBy.name,
+          email: job.postedBy.email,
+        }
+      : null;
+
     res.status(200).json({
       job: {
         ...job.toObject(),
-        postedBy: { _id:job.postedBy._id, name: job.postedBy.name, email: job.postedBy.email },
+        postedBy: postedBy,
       },
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
 };
-
