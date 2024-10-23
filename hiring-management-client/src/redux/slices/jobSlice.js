@@ -14,9 +14,7 @@ export const fetchJobs = createAsyncThunk(
     try {
       return await getAllJobs(searchTerm, page, limit);
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "No Match Found!"
-      );
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -27,9 +25,7 @@ export const fetchSingleJob = createAsyncThunk(
     try {
       return await getJobById(jobId);
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch job details."
-      );
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -40,9 +36,7 @@ export const fetchMyJob = createAsyncThunk(
     try {
       return await getMyJob(page, limit, sort, order);
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch job details."
-      );
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -53,9 +47,7 @@ export const createJob = createAsyncThunk(
     try {
       return await createJobService(jobData);
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to create job."
-      );
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -66,9 +58,7 @@ export const updateJob = createAsyncThunk(
     try {
       return await updateJobService(jobId, jobData);
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to update job."
-      );
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -79,9 +69,7 @@ export const deleteJob = createAsyncThunk(
     try {
       return await deleteJobService(jobId);
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to delete job."
-      );
+      return rejectWithValue(error.message);
     }
   }
 );

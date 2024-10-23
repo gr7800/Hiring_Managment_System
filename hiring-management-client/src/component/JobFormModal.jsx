@@ -10,8 +10,8 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
     description: "",
     location: "",
     salaryRange: "",
-    jobType: "",
-    remoteOrOnsite: "",
+    jobType: "Full-time",
+    remoteOrOnsite: "Remote",
     experiences: "",
     educationalRequirements: "",
   });

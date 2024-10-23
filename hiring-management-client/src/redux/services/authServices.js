@@ -3,25 +3,22 @@ const BaseUrl = import.meta.env.VITE_BASEURL;
 
 const API_URL = `${BaseUrl}/users`;
 
-const apiClient = axios.create({
-  baseURL: API_URL,
-  headers: { "Content-Type": "multipart/form-data" },
-});
+const getAuthHeader = () => {
+  const token = localStorage.getItem("token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
 const handleResponse = async (promise) => {
-  try {
-    const response = await promise;
-    return response.data;
-  } catch (error) {
-    const errorMsg = error.response
-      ? error.response.data
-      : { message: "Network Error" };
-    throw errorMsg;
-  }
+  const response = await promise;
+  return response.data;
 };
 
 export const registerUserService = async (userData) => {
-  return handleResponse(apiClient.post("/register", userData));
+  return handleResponse(
+    axios.post(`${API_URL}/register`, userData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+  );
 };
 
 export const loginUserService = async (userData) => {
@@ -32,20 +29,18 @@ export const loginUserService = async (userData) => {
   );
 };
 
-export const fetchUserProfileService = async (token) => {
+export const fetchUserProfileService = async () => {
   return handleResponse(
     axios.get(`${API_URL}/profile`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: getAuthHeader(),
     })
   );
 };
 
-export const updateUserProfileService = async (userData, token) => {
+export const updateUserProfileService = async (userData) => {
   return handleResponse(
     axios.put(`${API_URL}/profile`, userData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { ...getAuthHeader(), "Content-Type": "multipart/form-data" },
     })
   );
 };

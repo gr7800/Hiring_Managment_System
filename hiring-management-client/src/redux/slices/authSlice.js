@@ -35,14 +35,10 @@ export const fetchUserProfile = createAsyncThunk(
   "auth/fetchUserProfile",
   async (_, { rejectWithValue, dispatch }) => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("No token found");
-      }
-      const data = await fetchUserProfileService(token);
+      const data = await fetchUserProfileService();
       return data;
     } catch (error) {
-      if (error.message === "No token found" || error.message.includes("401")) {
+      if (error.message.includes("401")) {
         dispatch(logout());
       }
       return rejectWithValue(error.message);
@@ -54,11 +50,7 @@ export const updateUserProfile = createAsyncThunk(
   "auth/updateUserProfile",
   async (userData, { rejectWithValue, dispatch }) => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("No token found");
-      }
-      const data = await updateUserProfileService(userData, token);
+      const data = await updateUserProfileService(userData);
       return data;
     } catch (error) {
       if (error.message === "No token found" || error.message.includes("401")) {
@@ -100,7 +92,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.auth = true;
         state.user = action.payload.user;
-        state.token = action.payload.token;
         state.error = "";
       })
       .addCase(registerUser.rejected, (state, action) => {
@@ -157,5 +148,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout,clearMessage } = authSlice.actions;
+export const { logout, clearMessage } = authSlice.actions;
 export default authSlice.reducer;
