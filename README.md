@@ -1,4 +1,3 @@
-
 # Hiring Management System
 
 This project is a full-stack hiring management system designed to streamline the process of job postings, applications, and management. It includes features for both hiring managers and applicants, ensuring smooth functionality for posting jobs, managing applications, and applying for positions.
@@ -34,17 +33,20 @@ Ensure you have the following installed before running the application:
 ### Backend Setup
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/your-repo/hiring-management-system.git
    cd hiring-management-system/backend
    ```
 
 2. Install backend dependencies:
+
    ```bash
    npm install
    ```
 
 3. Create a `.env` file in the `backend` directory and add the following environment variables:
+
    ```bash
    PORT=5000
    MONGO_URI=<Your MongoDB URI>
@@ -62,16 +64,19 @@ Ensure you have the following installed before running the application:
 ### Frontend Setup
 
 1. Navigate to the frontend directory:
+
    ```bash
    cd ../frontend
    ```
 
 2. Install frontend dependencies:
+
    ```bash
    npm install
    ```
 
 3. Create a `.env` file in the `frontend` directory with the following content:
+
    ```bash
    VITE_BASE_URL=http://localhost:5000
    ```
@@ -95,6 +100,7 @@ All protected routes require a JWT token in the `Authorization` header.
 ### Job Routes
 
 - **GET** `/jobs`: Retrieves all job postings with optional pagination, search, and sorting.
+
   - **Query Params**:
     - `page`: Current page (e.g., `/jobs?page=2`)
     - `search`: Search for job titles or descriptions (e.g., `/jobs?search=developer`)
@@ -103,6 +109,7 @@ All protected routes require a JWT token in the `Authorization` header.
 - **GET** `/jobs/:jobId`: Retrieve a specific job by its ID.
 
 - **POST** `/jobs`: Create a new job posting (Protected: Manager).
+
   - **Request Body**:
     ```json
     {
@@ -116,6 +123,7 @@ All protected routes require a JWT token in the `Authorization` header.
   - **Authorization**: Requires a JWT token with a `role: "manager"`.
 
 - **PUT** `/jobs/:jobId`: Update a job posting (Protected: Manager).
+
   - **Request Body**: Same as for job creation.
   - **Authorization**: JWT token with `role: "manager"` required.
 
@@ -125,6 +133,7 @@ All protected routes require a JWT token in the `Authorization` header.
 ### Application Routes
 
 - **POST** `/applications/:jobId/apply`: Apply to a job posting.
+
   - **Authorization**: Requires a JWT token.
   - **Request Body (FormData)**:
     - **Field**: `resume` (file upload)
@@ -134,13 +143,14 @@ All protected routes require a JWT token in the `Authorization` header.
     ```
 
 - **GET** `/applications/:jobId/applications`: Get all applications for a specific job (Protected: Manager).
+
   - **Authorization**: JWT token with `role: "manager"` required.
 
 - **PUT** `/applications/:applicationId/status`: Update the status of an application (Protected: Manager).
   - **Request Body**:
     ```json
     {
-      "status": "accepted" 
+      "status": "accepted"
     }
     ```
   - **Authorization**: JWT token with `role: "manager"` required.
@@ -148,6 +158,7 @@ All protected routes require a JWT token in the `Authorization` header.
 ### User Routes
 
 - **POST** `/users/register`: Register a new user.
+
   - **Request Body**:
     ```json
     {
@@ -158,6 +169,7 @@ All protected routes require a JWT token in the `Authorization` header.
     ```
 
 - **POST** `/users/login`: Log in a user.
+
   - **Request Body**:
     ```json
     {
@@ -167,6 +179,7 @@ All protected routes require a JWT token in the `Authorization` header.
     ```
 
 - **GET** `/users/profile`: Get the logged-in user's profile (Protected).
+
   - **Authorization**: JWT token required.
 
 - **PUT** `/users/profile`: Update the user's profile (Protected).
@@ -182,6 +195,7 @@ All protected routes require a JWT token in the `Authorization` header.
 
 - Resumes are uploaded to Cloudinary when a user applies for a job.
 - The Cloudinary configuration is stored in the `.env` file with the following keys:
+
   ```bash
   CLOUDINARY_CLOUD_NAME=<your-cloudinary-cloud-name>
   CLOUDINARY_API_KEY=<your-cloudinary-api-key>
@@ -235,3 +249,49 @@ The backend can be deployed to services like Heroku or DigitalOcean. Ensure that
 
 The frontend can be deployed using services like Vercel or Netlify. Update the `VITE_BASE_URL` in the `.env` file to point to your production API URL.
 
+// mongodb query
+
+```bash
+ db.jobs.aggregate([
+{
+$match:{
+       $or:[
+            {title:{$regex:"Front",$options:"i"}}
+           ]
+    }
+ },
+  {
+    $lookup:{
+          from:"users",
+          localField:"postedBy",
+          foreignField:"_id",
+          as:"postedBy"
+    }
+  },
+  {
+    $unwind:"$postedBy"
+},
+{
+$facet: {
+    jobs:[
+      {$sort:{["updatedAt"]:1}},
+{$skip: (2-1)*2},
+      {$limit: Number(2)},
+{$project:{
+               title:1,
+               location:1,
+               jobTypw:1,
+               postedBy:{
+                   name: "$postedBy.name",
+email: "$postedBy.email",
+                },
+               createdAt: 1,
+        },
+      },
+    ],
+    totalJobs: [{$count:"count"}],
+},
+},
+],
+);
+```

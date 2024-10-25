@@ -13,6 +13,7 @@ const handleResponse = async (promise) => {
     const response = await promise;
     return response.data;
   } catch (error) {
+    // console.log(error)
     const errorMsg = error.response?.data?.message || "Network Error";
     throw new Error(errorMsg);
   }
