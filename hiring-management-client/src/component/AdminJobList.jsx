@@ -45,7 +45,7 @@ const AdminJobList = ({ handleUpdate }) => {
 
   return (
     <div className="admin-job-list">
-      <div className="flex bg-gray-200 flex-wrap justify-between items-center px-6 py-6">
+      <div className="flex bg-gray-200 flex-wrap justify-between items-center px-6 py-6 mb-4">
         <div className="flex items-center space-x-4">
           <label htmlFor="limit" className="font-semibold">Jobs per page:</label>
           <select

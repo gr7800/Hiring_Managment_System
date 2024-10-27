@@ -7,9 +7,9 @@ const JobCard = ({ job, onDelete, onUpdate }) => {
   const { pathname } = useLocation();
 
   return (
-    <div className="job-card border border-gray-300 rounded-lg shadow-[#1f84b9] shadow-md p-7 bg-white hover:shadow-lg transition-shadow duration-300 text-[#1f84b9]">
+    <div className="job-card border border-gray-300 rounded-lg shadow-[#1f84b9] shadow-md p-7 bg-white hover:shadow-lg transition-shadow duration-300 text-[#1f84b9] capitalize">
       <div className="mb-4 grid grid-cols-2 items-center justify-between">
-        <h3 className="text-2xl font-semibold">{job.title}</h3>
+        <h3 className="text-2xl font-semibold uppercase">{job.title}</h3>
         <p className="w-full text-[#1f84b9] text-right">
           <span className="font-siemibold">Salary Range:</span>{" "}
           {job.salaryRange}
@@ -32,9 +32,6 @@ const JobCard = ({ job, onDelete, onUpdate }) => {
         </p>
         <p>
           <span className="font-semibold">Experience:</span> {job.experiences}
-        </p>
-        <p>
-          <span className="font-semibold">Company:</span> {job.companyName}
         </p>
         <p>
           <span className="font-semibold">Posted On:</span>{" "}

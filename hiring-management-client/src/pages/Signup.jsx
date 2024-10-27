@@ -22,10 +22,12 @@ const Signup = () => {
 
   const validationSchema = Yup.object({
     name: Yup.string()
+      .matches(/^[A-Za-z\s]+$/, "Name can only contain letters and spaces")
       .min(2, "Name is too short")
       .max(50, "Name is too long")
       .required("Name is required"),
     email: Yup.string()
+      .matches(/^[a-z0-9.]+@[a-z]+\.[a-z]{2,}$/, "Invalid email format")
       .email("Invalid email format")
       .required("Email is required"),
     password: Yup.string()

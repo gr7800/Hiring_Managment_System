@@ -109,7 +109,7 @@ export const deleteJob = async (req, res) => {
 export const getAllJobs = async (req, res) => {
   try {
     const {
-      searchTerm,
+      searchTerm='',
       page = 1,
       limit = 10,
       sort = "createdAt",
@@ -146,13 +146,14 @@ export const getAllJobs = async (req, res) => {
     res.status(200).json({
       jobs: jobs.map((job) => ({
         ...job.toObject(),
-        postedBy: { name: job.postedBy.name, email: job.postedBy.email },
+        postedBy: { name: job?.postedBy?.name, email: job?.postedBy?.email },
       })),
       totalJobs,
       totalPages: Math.ceil(totalJobs / limit),
       currentPage: Number(page),
     });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: "Server error", error });
   }
 };
@@ -198,7 +199,7 @@ export const getMyJobs = async (req, res) => {
     res.status(200).json({
       jobs: jobs.map((job) => ({
         ...job.toObject(),
-        postedBy: { name: job.postedBy.name, email: job.postedBy.email },
+        postedBy: { name: job?.postedBy?.name, email: job?.postedBy?.email },
       })),
       totalJobs,
       totalPages: Math.ceil(totalJobs / limit),
@@ -222,7 +223,7 @@ export const getJobById = async (req, res) => {
     res.status(200).json({
       job: {
         ...job.toObject(),
-        postedBy: { _id:job.postedBy._id, name: job.postedBy.name, email: job.postedBy.email },
+        postedBy: { _id:job?.postedBy?._id, name: job.postedBy?.name, email: job?.postedBy?.email },
       },
     });
   } catch (error) {

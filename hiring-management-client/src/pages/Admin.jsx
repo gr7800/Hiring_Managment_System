@@ -4,7 +4,7 @@ import ApplicantsList from "../component/ApplicantsList";
 import JobFormModal from "../component/JobFormModal";
 
 const Admin = () => {
-  const [showJobs, setShowJobs] = useState(false);
+  const [showJobs, setShowJobs] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);

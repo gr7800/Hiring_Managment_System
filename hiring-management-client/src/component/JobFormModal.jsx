@@ -28,9 +28,40 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
   };
 
   const validateForm = () => {
-    const { title, description, location, salaryRange,jobType, experiences, educationalRequirements } = formData;
-    if (!title || !description || !location || !salaryRange || !jobType || !experiences || !educationalRequirements) {
-      toast.error("All fields are required.");
+    const { title, description, location, salaryRange, experiences, educationalRequirements } = formData;
+
+    if (!title || !/^[a-zA-Z0-9\s,.-]+$/.test(title)) {
+      toast.error("Job title must not contain special characters.");
+      return false;
+    }
+
+    if (!description) {
+      toast.error("Description is required.");
+      return false;
+    }
+
+    if (!location || !/^[a-zA-Z\s,()-]+$/.test(location)) {
+      toast.error("Location must contain only alphabets, spaces, commas, hyphens, and parentheses.");
+      return false;
+    }
+
+    if (!/^\d{4,}\s*-\s*\d{4,}$/.test(salaryRange.trim())) {
+      toast.error("Salary Range should be in the format 'min - max' (e.g., 50000 - 70000).");
+      return false;
+    }
+    const [minSalary, maxSalary] = salaryRange.split('-').map(s => parseInt(s.trim(), 10));
+    if (minSalary >= maxSalary) {
+      toast.error("Minimum salary should be less than maximum salary.");
+      return false;
+    }
+
+    if (!/^\d+(\.\d+)?\s*years?$/.test(experiences.trim())) {
+      toast.error("Experience must be a number followed by 'year' or 'years' (e.g., '2 years' or '2.3 years').");
+      return false;
+    }
+
+    if (!educationalRequirements || !/^[a-zA-Z\s,()-]+$/.test(educationalRequirements)) {
+      toast.error("Educational requirements should not contain special characters.");
       return false;
     }
     return true;
@@ -57,7 +88,7 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
       onClose();
     }
 
-    dispatch(fetchMyJob({ page:1, limit:5, sort:"updatedAt", order:"desc" }));
+    dispatch(fetchMyJob({ page: 1, limit: 5, sort: "updatedAt", order: "desc" }));
   };
 
   if (!isOpen) return null;
@@ -99,7 +130,7 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
             name="salaryRange"
             value={formData.salaryRange}
             onChange={handleChange}
-            placeholder="Salary Range"
+            placeholder="Salary Range (e.g., 50000 - 70000)"
             required
           />
           <select
@@ -131,7 +162,7 @@ const JobFormModal = ({ isOpen, onClose, initialData, isUpdate }) => {
             name="experiences"
             value={formData.experiences}
             onChange={handleChange}
-            placeholder="Experience Required"
+            placeholder="Experience Required (e.g., 3 years)"
             required
           />
           <input

@@ -14,7 +14,7 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { pathname } = useLocation();
   const { user, auth, token } = useSelector((state) => state.auth);
-  const role = user?.role||"Applicant";
+  const role = user?.role || "Applicant";
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -81,7 +81,7 @@ const Navbar = () => {
                   Jobs
                 </Link>
               </li>
-              {user?.role === "Applicant" && <li
+              <li
                 className={`${pathname === "/my-applications" && "bg-[#1f84b9] text-white"
                   } `}
               >
@@ -92,7 +92,7 @@ const Navbar = () => {
                 >
                   Applications
                 </Link>
-              </li>}
+              </li>
               <li
                 className={`${pathname === "/profile" && "bg-[#1f84b9] text-white"
                   } `}

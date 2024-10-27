@@ -24,12 +24,28 @@ const Profile = () => {
     if (user === null) {
       navigate("/login");
     }
-  }, [user])
+  }, [user, navigate]);
 
   const validationSchema = Yup.object({
-    experience: Yup.string().optional(),
-    education: Yup.string().optional(),
-    designation: Yup.string().optional(),
+    name: Yup.string()
+      .min(2, "Name is too short")
+      .max(50, "Name is too long")
+      .matches(/^[a-zA-Z\s]+$/, "Only alphabets and spaces are allowed")
+      .required("Name is required"),
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    experience: Yup.string()
+      .matches(/^\d+(\.\d+)?\s*years?$/, "Experience must be a number followed by 'year' or 'years' (e.g., '2 year' or '2.3 years').")
+      .optional(),
+    education: Yup.string()
+      .max(100, "Education details are too long")
+      .matches(/^[a-zA-Z\s()-]+$/, "Only alphabets and ( ) are allowed in education details")
+      .optional(),
+    designation: Yup.string()
+      .max(50, "Designation is too long")
+      .matches(/^[a-zA-Z0-9\s]+$/, "Only alphabets and spaces are allowed in designation")
+      .optional(),
   });
 
   const handleSubmit = (values, { setSubmitting }) => {
@@ -135,7 +151,7 @@ const Profile = () => {
                 <Field
                   type="text"
                   name="experience"
-                  placeholder="Experience in years (e.g., 2.6)"
+                  placeholder="Experience (e.g., 2 years)"
                   className="w-full p-4 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <ErrorMessage

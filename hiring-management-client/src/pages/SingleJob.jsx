@@ -75,10 +75,10 @@ const SingleJob = () => {
   return (
     <div className="w-full min-h-screen bg-gray-100 px-10 py-10">
       {singleJob ? (
-        <div className="w-full flex flex-col justify-center items-center gap-8">
+        <div className="w-full flex flex-col justify-center items-center gap-8 capitalize">
           <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg shadow-[#1f84b9] p-8 mx-4">
             <div className="mb-4 grid grid-cols-2 items-center justify-between">
-              <h2 className="text-2xl font-bold text-[#1f84b9]">
+              <h2 className="text-2xl font-bold text-[#1f84b9] uppercase">
                 {singleJob.title}
               </h2>
               <p className="w-full text-[#1f84b9] text-right">
@@ -112,7 +112,7 @@ const SingleJob = () => {
                 {singleJob.postedBy.name}{" "}
                 <a
                   className="underline text-[#1f84b9]"
-                  href={`mailto:${singleJob.postedBy.email}`}
+                  href={`mailto:${singleJob?.postedBy?.email}`}
                 >{`( Send Mail )`}</a>
               </p>
             </div>
@@ -120,7 +120,7 @@ const SingleJob = () => {
               <span className="font-semibold text-[#1f84b9]">Description:</span>{" "}
               {singleJob.description}
             </p>
-            {role === "HR" || role === "Manager" ? (
+            {(role === "HR" || role === "Manager")&&(singleJob?.postedBy?.email==user?.email) ? (
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded hover:buttonbg transition duration-200"
                 onClick={handleSeeApplication}
