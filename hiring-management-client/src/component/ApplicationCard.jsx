@@ -41,16 +41,16 @@ const ApplicationCard = ({ application }) => {
           {application.job?.title || "Job Title"}
         </h3>
         <div className="flex justify-end items-center gap-4">
-          <label className="text-[#1f84b9]">
-            Status:{" "}
-          </label>
+          <label className="text-[#1f84b9]">Status: </label>
           <select
             id="status"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
             className="p-2 border border-gray-300 rounded-lg bg-blue-50"
           >
-            <option value="Applied">Applied</option>
+            {(status === "Applied") && (
+              <option value="Applied">Applied</option>
+            )}
             <option value="Shortlisted">Shortlisted</option>
             <option value="Rejected">Rejected</option>
           </select>

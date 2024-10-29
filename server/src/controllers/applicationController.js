@@ -56,7 +56,7 @@ export const updateApplicationStatus = async (req, res) => {
   try {
     const { applicationId } = req.params;
     const { status } = req.body;
-    if (!['Applied','Shortlisted', 'Rejected'].includes(status)) {
+    if (!['Shortlisted', 'Rejected'].includes(status)) {
       return res.status(400).json({ message: 'Invalid status value' });
     }
 

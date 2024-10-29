@@ -18,6 +18,7 @@ const JobList = ({ searchTerm, currentPage, jobsPerPage, setCurrentPage, handleU
     dispatch(clearMessage());
     if (role && ((role !== "HR" && role !== "Manager") || pathname == "/jobs")) {
       dispatch(fetchJobs({ searchTerm, page: currentPage, limit: jobsPerPage }));
+      console.log("from joblist")
     }
   }, [currentPage, jobsPerPage, role]);
 
@@ -44,8 +45,8 @@ const JobList = ({ searchTerm, currentPage, jobsPerPage, setCurrentPage, handleU
       {message && <p className="text-green-500">{message}</p>}
 
       <div className="flex flex-col gap-5">
-        {jobs.length > 0 ? (
-          jobs.map((job) => (
+        {jobs&&jobs?.length > 0 ? (
+          jobs?.map((job) => (
             <JobCard
               key={job._id}
               job={job}

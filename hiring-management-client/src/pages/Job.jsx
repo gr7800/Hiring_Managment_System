@@ -11,7 +11,8 @@ const Job = () => {
 
   useEffect(() => {
     dispatch(fetchJobs({ searchTerm, page: currentPage, limit: jobsPerPage }));
-  }, [currentPage, dispatch]);
+    console.log("jobpage")
+  }, [currentPage]);
 
   const handleSearch = (e) => {
     e.preventDefault();
